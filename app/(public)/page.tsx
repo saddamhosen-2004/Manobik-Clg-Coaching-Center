@@ -26,7 +26,8 @@ function useCountUp(target: number, duration = 1400) {
   const [value, setValue] = useState(0);
   const raf = useRef<number>(0);
   useEffect(() => {
-    if (target === 0) return;
+    // Always set to target immediately if 0 (no animation needed)
+    if (target === 0) { setValue(0); return; }
     let start: number | null = null;
     const step = (ts: number) => {
       if (!start) start = ts;
@@ -41,8 +42,8 @@ function useCountUp(target: number, duration = 1400) {
   return value;
 }
 
+
 export default function PublicHomePage() {
-  const supabase = createClient();
 
   const [studentCount, setStudentCount] = useState(0);
   const [teacherCount, setTeacherCount] = useState(0);
@@ -51,16 +52,20 @@ export default function PublicHomePage() {
   const [heroBannerUrl, setHeroBannerUrl] = useState("/images/hero_banner.png");
 
   useEffect(() => {
+    const supabaseClient = createClient();
     const fetchStats = async () => {
       try {
         const [stdRes, teachRes, batchRes, settingsRes] = await Promise.all([
-          supabase.from("students").select("id", { count: "exact", head: true }),
-          supabase.from("teachers").select("id", { count: "exact", head: true }),
-          supabase.from("batches").select("id, name").limit(4),
-          supabase.from("site_settings").select("value").eq("key", "hero_banner_url").single(),
+          supabaseClient.from("students").select("id", { count: "exact", head: true }),
+          supabaseClient.from("teachers").select("id", { count: "exact", head: true }),
+          supabaseClient.from("batches").select("id, name").limit(10),
+          supabaseClient.from("site_settings").select("value").eq("key", "hero_banner_url").single(),
         ]);
-        setStudentCount(stdRes.count || 0);
-        setTeacherCount(teachRes.count || 0);
+        if (stdRes.error) console.error("students count error:", stdRes.error);
+        if (teachRes.error) console.error("teachers count error:", teachRes.error);
+        if (batchRes.error) console.error("batches error:", batchRes.error);
+        setStudentCount(stdRes.count ?? 0);
+        setTeacherCount(teachRes.count ?? 0);
         setBatches(batchRes.data || []);
         if (settingsRes.data?.value) setHeroBannerUrl(settingsRes.data.value);
       } catch (err) {
@@ -70,7 +75,8 @@ export default function PublicHomePage() {
       }
     };
     fetchStats();
-  }, [supabase]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const animStudents = useCountUp(studentCount);
   const animTeachers = useCountUp(teacherCount);

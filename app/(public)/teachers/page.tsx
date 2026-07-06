@@ -69,7 +69,7 @@ export default function PublicTeachersPage() {
               className="bg-white border border-slate-200/50 rounded-2xl p-5 shadow-xs flex flex-col items-center text-center transition-all hover:shadow-md hover:scale-[1.01]"
             >
               {/* Photo */}
-              <div className="w-20 h-20 rounded-full overflow-hidden relative bg-slate-50 border border-slate-100 mb-4 animate-fade-in">
+              <div className="w-20 h-20 rounded-full overflow-hidden relative bg-slate-50 border border-slate-100 mb-4">
                 <Image
                   src={teacher.photo_url || "/images/demo/avatar_teacher.png"}
                   alt={teacher.name}
