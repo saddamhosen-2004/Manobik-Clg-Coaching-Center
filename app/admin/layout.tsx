@@ -89,6 +89,10 @@ export default function AdminLayout({
     { name: "আর্থিক রিপোর্ট", href: "/admin/finance/reports", icon: BarChart3 },
   ];
 
+  if (pathname === "/admin/login") {
+    return <>{children}</>;
+  }
+
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden font-sans">
       {/* Mobile Sidebar Overlay */}
