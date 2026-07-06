@@ -30,12 +30,12 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files — only ignore local overrides (which may contain secrets)
+.env*.local
 
 # vercel
 .vercel
 
-# typescript
+# typescript build info
 *.tsbuildinfo
 next-env.d.ts
