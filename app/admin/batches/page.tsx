@@ -261,10 +261,10 @@ export default function BatchesPage() {
               </h3>
               <button
                 onClick={() => setModalOpen(false)}
-                className="flex items-center gap-1 text-slate-400 hover:text-slate-600 text-xs font-semibold cursor-pointer"
+                className="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-1 rounded-lg transition-colors cursor-pointer"
+                title="বন্ধ করুন"
               >
-                <X className="w-4 h-4" />
-                <span>বন্ধ করুন</span>
+                <X className="w-5 h-5" />
               </button>
             </div>
 
