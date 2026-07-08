@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { Plus, Pencil, Trash2, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, AlertCircle, CheckCircle2, X } from "lucide-react";
 
 interface Teacher {
   id: string;
@@ -285,9 +285,10 @@ export default function SubjectsPage() {
               </h3>
               <button
                 onClick={() => setModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 text-sm font-semibold cursor-pointer"
+                className="flex items-center gap-1 text-slate-400 hover:text-slate-600 text-xs font-semibold cursor-pointer"
               >
-                বন্ধ করুন
+                <X className="w-4 h-4" />
+                <span>বন্ধ করুন</span>
               </button>
             </div>
 

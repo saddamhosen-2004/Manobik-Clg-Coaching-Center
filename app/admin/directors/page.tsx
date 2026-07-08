@@ -15,6 +15,7 @@ import {
   MapPin,
   Camera,
   UserCheck,
+  X,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -314,9 +315,10 @@ export default function DirectorsPage() {
               </h3>
               <button
                 onClick={() => setModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 text-sm font-semibold cursor-pointer"
+                className="flex items-center gap-1 text-slate-400 hover:text-slate-600 text-xs font-semibold cursor-pointer"
               >
-                বন্ধ করুন
+                <X className="w-4 h-4" />
+                <span>বন্ধ করুন</span>
               </button>
             </div>
 

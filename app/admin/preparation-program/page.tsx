@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Target,
   Users,
+  X,
 } from "lucide-react";
 
 interface PrepProgram {
@@ -455,9 +456,10 @@ export default function PreparationProgramPage() {
               </h3>
               <button
                 onClick={() => setProgramModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 text-sm font-semibold cursor-pointer"
+                className="flex items-center gap-1 text-slate-400 hover:text-slate-600 text-xs font-semibold cursor-pointer"
               >
-                বন্ধ করুন
+                <X className="w-4 h-4" />
+                <span>বন্ধ করুন</span>
               </button>
             </div>
 
@@ -532,9 +534,10 @@ export default function PreparationProgramPage() {
               </h3>
               <button
                 onClick={() => setEnrollModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 text-sm font-semibold cursor-pointer"
+                className="flex items-center gap-1 text-slate-400 hover:text-slate-600 text-xs font-semibold cursor-pointer"
               >
-                বন্ধ করুন
+                <X className="w-4 h-4" />
+                <span>বন্ধ করুন</span>
               </button>
             </div>
 
