@@ -56,8 +56,8 @@ export default function PublicHomePage() {
     const fetchStats = async () => {
       try {
         const [stdRes, teachRes, batchRes, settingsRes] = await Promise.all([
-          supabaseClient.from("students").select("id", { count: "exact", head: true }),
-          supabaseClient.from("teachers").select("id", { count: "exact", head: true }),
+          supabaseClient.from("view_public_students").select("id", { count: "exact", head: true }),
+          supabaseClient.from("view_public_teachers").select("id", { count: "exact", head: true }),
           supabaseClient.from("batches").select("id, name").limit(10),
           supabaseClient.from("site_settings").select("value").eq("key", "hero_banner_url").single(),
         ]);
