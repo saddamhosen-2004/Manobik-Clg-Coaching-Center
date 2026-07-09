@@ -173,13 +173,7 @@ export default function PublicLayout({
           MOBILE TOP BAR
          ============================================= */}
       <div
-        className="md:hidden w-full h-14 fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 animate-slide-down rounded-b-2xl"
-        style={{
-          background: "rgba(245,247,250,0.88)",
-          backdropFilter: "blur(16px)",
-          borderBottom: "1px solid rgba(59,111,168,0.14)",
-          boxShadow: "0 2px 16px rgba(59,111,168,0.08)",
-        }}
+        className="md:hidden w-full h-14 fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 animate-slide-down rounded-b-2xl border-b border-slate-200/60 shadow-xs bg-white"
       >
         <Link href="/" className="flex items-center gap-2.5">
           {logoUrl ? (
