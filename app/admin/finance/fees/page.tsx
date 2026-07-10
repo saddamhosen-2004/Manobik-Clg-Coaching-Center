@@ -226,6 +226,11 @@ export default function FeesPage() {
     }
   }, [selectedStudentId, students]);
 
+  // Reset student selection when month or year changes in Create Modal
+  useEffect(() => {
+    setSelectedStudentId("");
+  }, [month, year]);
+
   const handleCollectFee = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -417,10 +422,23 @@ export default function FeesPage() {
     return matchesSearch && matchesBatch;
   });
 
-  // Filter students inside the Collect Fee modal based on modalSelectedBatchId
+  // Filter students inside the Collect Fee modal based on modalSelectedBatchId, month, and year
   const filteredModalStudents = students.filter((student) => {
-    if (modalSelectedBatchId === "all") return true;
-    return student.batch_id === modalSelectedBatchId || student.batches?.id === modalSelectedBatchId;
+    const matchesBatch = modalSelectedBatchId === "all" ||
+      student.batch_id === modalSelectedBatchId ||
+      student.batches?.id === modalSelectedBatchId;
+
+    if (!matchesBatch) return false;
+
+    // Hide students who have already paid for the selected month and year
+    const alreadyPaid = collections.some(
+      (col) =>
+        col.student_id === student.id &&
+        col.month === month &&
+        col.year === parseInt(year)
+    );
+
+    return !alreadyPaid;
   });
 
   return (
@@ -859,8 +877,23 @@ export default function FeesPage() {
                     <option value="">-- শিক্ষার্থী নির্বাচন করুন --</option>
                     {students
                       .filter((s) => {
-                        if (editModalSelectedBatchId === "all") return true;
-                        return s.batch_id === editModalSelectedBatchId || s.batches?.id === editModalSelectedBatchId;
+                        const matchesBatch = editModalSelectedBatchId === "all" ||
+                          s.batch_id === editModalSelectedBatchId ||
+                          s.batches?.id === editModalSelectedBatchId;
+                          
+                        if (!matchesBatch) return false;
+                        
+                        // Hide students who have already paid for the selected month and year,
+                        // except the one currently associated with the record being edited
+                        const alreadyPaid = collections.some(
+                          (col) =>
+                            col.student_id === s.id &&
+                            col.month === editMonth &&
+                            col.year === parseInt(editYear) &&
+                            col.id !== editingCollection.id
+                        );
+                        
+                        return !alreadyPaid;
                       })
                       .map((student) => (
                         <option key={student.id} value={student.id}>

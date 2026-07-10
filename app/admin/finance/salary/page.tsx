@@ -146,6 +146,11 @@ export default function SalaryPage() {
     }
   }, [selectedTeacherId, teachers]);
 
+  // Reset teacher selection when month or year changes in Create Modal
+  useEffect(() => {
+    setSelectedTeacherId("");
+  }, [month, year]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -394,11 +399,21 @@ export default function SalaryPage() {
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-teal-600/20 focus:border-teal-600 transition-all text-xs"
                 >
                   <option value="">-- শিক্ষক নির্বাচন করুন --</option>
-                  {teachers.map((teacher) => (
-                    <option key={teacher.id} value={teacher.id}>
-                      {teacher.name} (বেতন: ৳{teacher.monthly_salary})
-                    </option>
-                  ))}
+                  {teachers
+                    .filter((teacher) => {
+                      const alreadyPaid = salaries.some(
+                        (sal) =>
+                          sal.teacher_id === teacher.id &&
+                          sal.month === month &&
+                          sal.year === parseInt(year)
+                      );
+                      return !alreadyPaid;
+                    })
+                    .map((teacher) => (
+                      <option key={teacher.id} value={teacher.id}>
+                        {teacher.name} (বেতন: ৳{teacher.monthly_salary})
+                      </option>
+                    ))}
                 </select>
               </div>
 
@@ -537,11 +552,22 @@ export default function SalaryPage() {
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-teal-600/20 focus:border-teal-600 transition-all text-xs"
                 >
                   <option value="">-- শিক্ষক নির্বাচন করুন --</option>
-                  {teachers.map((teacher) => (
-                    <option key={teacher.id} value={teacher.id}>
-                      {teacher.name} (বেতন: ৳{teacher.monthly_salary})
-                    </option>
-                  ))}
+                  {teachers
+                    .filter((teacher) => {
+                      const alreadyPaid = salaries.some(
+                        (sal) =>
+                          sal.teacher_id === teacher.id &&
+                          sal.month === editMonth &&
+                          sal.year === parseInt(editYear) &&
+                          sal.id !== editingRecord.id
+                      );
+                      return !alreadyPaid;
+                    })
+                    .map((teacher) => (
+                      <option key={teacher.id} value={teacher.id}>
+                        {teacher.name} (বেতন: ৳{teacher.monthly_salary})
+                      </option>
+                    ))}
                 </select>
               </div>
 
