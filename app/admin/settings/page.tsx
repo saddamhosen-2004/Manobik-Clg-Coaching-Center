@@ -581,10 +581,10 @@ export default function AdminSettingsPage() {
                     <Link
                       href="/"
                       target="_blank"
-                      className="inline-flex items-center gap-1.5 text-xs text-teal-600 hover:text-teal-700 font-semibold transition-colors"
+                      className="inline-flex items-center justify-center w-7 h-7 bg-teal-50 hover:bg-teal-100/50 text-teal-600 rounded-lg transition-all cursor-pointer"
+                      title="লাইভ দেখুন"
                     >
-                      <Eye className="w-3.5 h-3.5" />
-                      লাইভ দেখুন
+                      <Eye className="w-4 h-4" />
                     </Link>
                   )}
                 </div>
