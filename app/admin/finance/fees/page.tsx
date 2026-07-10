@@ -14,6 +14,8 @@ import {
   Calendar,
   DollarSign,
   X,
+  Edit,
+  Trash2,
 } from "lucide-react";
 
 interface Batch {
@@ -73,6 +75,16 @@ export default function FeesPage() {
   const [amount, setAmount] = useState("");
   const [paidDate, setPaidDate] = useState(new Date().toISOString().split("T")[0]);
   const [submitting, setSubmitting] = useState(false);
+
+  // Edit Fee Modal States
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editingCollection, setEditingCollection] = useState<FeeCollection | null>(null);
+  const [editStudentId, setEditStudentId] = useState("");
+  const [editMonth, setEditMonth] = useState("জানুয়ারি");
+  const [editYear, setEditYear] = useState(new Date().getFullYear().toString());
+  const [editAmount, setEditAmount] = useState("");
+  const [editPaidDate, setEditPaidDate] = useState(new Date().toISOString().split("T")[0]);
+  const [editModalSelectedBatchId, setEditModalSelectedBatchId] = useState("all");
 
   // Receipt Printing State
   const [receiptToPrint, setReceiptToPrint] = useState<FeeCollection | null>(null);
@@ -312,6 +324,84 @@ export default function FeesPage() {
     }, 150);
   };
 
+  const handleOpenEditModal = (col: FeeCollection) => {
+    setEditingCollection(col);
+    setEditStudentId(col.student_id);
+    setEditMonth(col.month);
+    setEditYear(col.year.toString());
+    setEditAmount(col.amount.toString());
+    setEditPaidDate(col.paid_date);
+    
+    // Find student batch to set batch filter in edit modal
+    const student = students.find(s => s.id === col.student_id);
+    if (student) {
+      setEditModalSelectedBatchId(student.batch_id || student.batches?.id || "all");
+    } else {
+      setEditModalSelectedBatchId("all");
+    }
+    
+    setError(null);
+    setSuccess(null);
+    setEditModalOpen(true);
+  };
+
+  const handleEditFee = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingCollection) return;
+    setSubmitting(true);
+    setError(null);
+    setSuccess(null);
+
+    if (!editStudentId || !editMonth || !editYear || !editAmount || !editPaidDate) {
+      setError("অনুগ্রহ করে সমস্ত ঘর সঠিকভাবে পূরণ করুন।");
+      setSubmitting(false);
+      return;
+    }
+
+    try {
+      const { error: updateErr } = await supabase
+        .from("fee_collections")
+        .update({
+          student_id: editStudentId,
+          month: editMonth,
+          year: parseInt(editYear),
+          amount: parseFloat(editAmount),
+          paid_date: editPaidDate,
+        })
+        .eq("id", editingCollection.id);
+
+      if (updateErr) throw updateErr;
+
+      setSuccess("পেমেন্ট রেকর্ডটি সফলভাবে সংশোধন করা হয়েছে।");
+      setEditModalOpen(false);
+      setEditingCollection(null);
+      fetchCollections();
+    } catch (err: any) {
+      setError(err.message || "সংশোধন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDeleteFee = async (id: string) => {
+    if (!window.confirm("আপনি কি নিশ্চিতভাবে এই পেমেন্ট রেকর্ডটি মুছে ফেলতে চান?")) return;
+    setError(null);
+    setSuccess(null);
+    try {
+      const { error: deleteErr } = await supabase
+        .from("fee_collections")
+        .delete()
+        .eq("id", id);
+
+      if (deleteErr) throw deleteErr;
+
+      setSuccess("পেমেন্ট রেকর্ডটি সফলভাবে মুছে ফেলা হয়েছে।");
+      fetchCollections();
+    } catch (err: any) {
+      setError(err.message || "মুছে ফেলতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+    }
+  };
+
   // Search and Batch Filter
   const filteredCollections = collections.filter((col) => {
     const term = searchTerm.toLowerCase();
@@ -483,6 +573,7 @@ export default function FeesPage() {
                     <th className="px-6 py-4">রোল/আইডি</th>
                     <th className="px-6 py-4">নাম</th>
                     <th className="px-6 py-4">রসিদ নম্বর</th>
+                    <th className="px-6 py-4 text-center">পদক্ষেপ</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -519,6 +610,24 @@ export default function FeesPage() {
                       </td>
                       <td className="px-6 py-4 font-mono font-bold text-slate-400 text-xs">
                         {col.receipt_number}
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <div className="flex items-center justify-center gap-1.5">
+                          <button
+                            onClick={() => handleOpenEditModal(col)}
+                            className="p-1.5 text-teal-600 hover:bg-teal-50 rounded-lg transition-colors cursor-pointer"
+                            title="সংশোধন করুন"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteFee(col.id)}
+                            className="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                            title="মুছে ফেলুন"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -679,6 +788,179 @@ export default function FeesPage() {
                       </>
                     ) : (
                       <span>সংরক্ষণ ও রসিদ তৈরি</span>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Edit Fee Modal */}
+        {editModalOpen && editingCollection && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+            <div className="bg-white w-full max-w-md rounded-2xl shadow-xl border border-slate-200 overflow-hidden animate-scale-up">
+              <div className="flex items-center justify-between h-14 px-6 border-b border-slate-100 bg-slate-50">
+                <h3 className="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+                  <Receipt className="w-4 h-4 text-teal-600" />
+                  <span>ফি সংশোধন ফরম</span>
+                </h3>
+                <button
+                  onClick={() => {
+                    setEditModalOpen(false);
+                    setEditingCollection(null);
+                  }}
+                  className="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-1 rounded-lg transition-colors cursor-pointer"
+                  title="বন্ধ করুন"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <form onSubmit={handleEditFee} className="p-6 space-y-4">
+                <div>
+                  <label className="block text-slate-700 text-xs font-semibold mb-1.5">
+                    ব্যাচ অনুযায়ী ফিল্টার করুন
+                  </label>
+                  <select
+                    value={editModalSelectedBatchId}
+                    onChange={(e) => {
+                      setEditModalSelectedBatchId(e.target.value);
+                      setEditStudentId("");
+                    }}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-teal-600/20 focus:border-teal-600 transition-all text-xs"
+                  >
+                    <option value="all">সব ব্যাচ</option>
+                    {batches.map((b) => (
+                      <option key={b.id} value={b.id}>
+                        {b.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 text-xs font-semibold mb-1.5">
+                    শিক্ষার্থী নির্বাচন করুন
+                  </label>
+                  <select
+                    value={editStudentId}
+                    required
+                    onChange={(e) => {
+                      const newStudentId = e.target.value;
+                      setEditStudentId(newStudentId);
+                      const student = students.find((s) => s.id === newStudentId);
+                      if (student) {
+                        setEditAmount(student.monthly_fee.toString());
+                      }
+                    }}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-teal-600/20 focus:border-teal-600 transition-all text-xs"
+                  >
+                    <option value="">-- শিক্ষার্থী নির্বাচন করুন --</option>
+                    {students
+                      .filter((s) => {
+                        if (editModalSelectedBatchId === "all") return true;
+                        return s.batch_id === editModalSelectedBatchId || s.batches?.id === editModalSelectedBatchId;
+                      })
+                      .map((student) => (
+                        <option key={student.id} value={student.id}>
+                          {student.name} ({student.student_id} -{" "}
+                          {student.batches?.name || "ব্যাচ নেই"})
+                        </option>
+                      ))}
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-slate-700 text-xs font-semibold mb-1.5">
+                      পরিশোধিত মাস
+                    </label>
+                    <select
+                      value={editMonth}
+                      onChange={(e) => setEditMonth(e.target.value)}
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-teal-600/20 focus:border-teal-600 transition-all text-xs"
+                    >
+                      {banglaMonths.map((m) => (
+                        <option key={m} value={m}>
+                          {m}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-slate-700 text-xs font-semibold mb-1.5">
+                      বছর
+                    </label>
+                    <select
+                      value={editYear}
+                      onChange={(e) => setEditYear(e.target.value)}
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-teal-600/20 focus:border-teal-600 transition-all text-xs"
+                    >
+                      <option value={new Date().getFullYear() - 1}>
+                        {(new Date().getFullYear() - 1).toString()}
+                      </option>
+                      <option value={new Date().getFullYear()}>
+                        {new Date().getFullYear().toString()}
+                      </option>
+                      <option value={new Date().getFullYear() + 1}>
+                        {(new Date().getFullYear() + 1).toString()}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-slate-700 text-xs font-semibold mb-1.5">
+                      টাকার পরিমাণ (৳)
+                    </label>
+                    <input
+                      type="number"
+                      required
+                      value={editAmount}
+                      onChange={(e) => setEditAmount(e.target.value)}
+                      placeholder="প্যাকেজ ফি"
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-teal-600/20 focus:border-teal-600 transition-all text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-700 text-xs font-semibold mb-1.5">
+                      পরিশোধের তারিখ
+                    </label>
+                    <input
+                      type="date"
+                      required
+                      value={editPaidDate}
+                      onChange={(e) => setEditPaidDate(e.target.value)}
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-teal-600/20 focus:border-teal-600 transition-all text-xs"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-4 flex items-center justify-end gap-2 border-t border-slate-100 mt-6">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditModalOpen(false);
+                      setEditingCollection(null);
+                    }}
+                    className="px-4 py-2 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-xl text-xs font-semibold cursor-pointer"
+                  >
+                    বাতিল
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="flex items-center justify-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-700 disabled:bg-teal-600/70 text-white rounded-xl text-xs font-semibold transition-all cursor-pointer"
+                  >
+                    {submitting ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>সংশোধন হচ্ছে...</span>
+                      </>
+                    ) : (
+                      <span>সংশোধন সংরক্ষণ করুন</span>
                     )}
                   </button>
                 </div>
