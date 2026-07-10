@@ -45,6 +45,7 @@ export default function AdminLayout({
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [siteTitle, setSiteTitle] = useState<string>("মানবিক কলেজ কোচিং সেন্টার");
 
   useEffect(() => {
     // Get logged-in user email
@@ -67,7 +68,9 @@ export default function AdminLayout({
         if (data) {
           const logo = data.find(s => s.key === "logo_url")?.value || null;
           const favicon = data.find(s => s.key === "favicon_url")?.value || null;
+          const title = data.find(s => s.key === "site_title")?.value || "মানবিক কলেজ কোচিং সেন্টার";
           setLogoUrl(logo);
+          setSiteTitle(title);
 
           // Dynamically update head favicon tag on mount
           if (favicon) {
@@ -159,7 +162,7 @@ export default function AdminLayout({
               </div>
             )}
             <span className="font-bold text-md text-white tracking-wide">
-              মানবিক কলেজ কোচিং সেন্টার
+              {siteTitle}
             </span>
           </Link>
           <button

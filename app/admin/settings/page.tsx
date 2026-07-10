@@ -14,6 +14,7 @@ import {
   Eye,
   Settings,
   FileText,
+  Palette,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -49,6 +50,11 @@ export default function AdminSettingsPage() {
   const [currentHidePublicStudents, setCurrentHidePublicStudents] = useState<boolean>(false);
   const [savingPrivacy, setSavingPrivacy] = useState(false);
 
+  // Site Title State
+  const [siteTitle, setSiteTitle] = useState("মানবিক কলেজ কোচিং সেন্টার");
+  const [currentSiteTitle, setCurrentSiteTitle] = useState("মানবিক কলেজ কোচিং সেন্টার");
+  const [savingSiteTitle, setSavingSiteTitle] = useState(false);
+
   // Hero Section Text State
   const [heroBadge, setHeroBadge] = useState("এইচএসসি প্রস্তুতি ২০২৬");
   const [currentHeroBadge, setCurrentHeroBadge] = useState("এইচএসসি প্রস্তুতি ২০২৬");
@@ -81,6 +87,7 @@ export default function AdminSettingsPage() {
         const logo = data?.find(s => s.key === "logo_url")?.value || null;
         const favicon = data?.find(s => s.key === "favicon_url")?.value || null;
         const hideStudents = data?.find(s => s.key === "hide_public_students")?.value === "true";
+        const title = data?.find(s => s.key === "site_title")?.value || "মানবিক কলেজ কোচিং সেন্টার";
         const badge = data?.find(s => s.key === "hero_badge")?.value || "এইচএসসি প্রস্তুতি ২০২৬";
         const heading = data?.find(s => s.key === "hero_heading")?.value || "মানবিক বিভাগের জন্য ত্রিশালের সেরা কলেজ কোচিং সেন্টার";
         const description = data?.find(s => s.key === "hero_description")?.value || "বাংলা, ইংরেজি, ইতিহাস, যুক্তিবিদ্যা, পৌরনীতি, অর্থনীতি ও সমাজবিজ্ঞানসহ মানবিক বিভাগের সকল বিষয়ের বিশেষায়িত ও মানসম্মত শিক্ষাদান।";
@@ -96,6 +103,9 @@ export default function AdminSettingsPage() {
 
         setHidePublicStudents(hideStudents);
         setCurrentHidePublicStudents(hideStudents);
+
+        setSiteTitle(title);
+        setCurrentSiteTitle(title);
 
         setHeroBadge(badge);
         setCurrentHeroBadge(badge);
@@ -270,6 +280,29 @@ export default function AdminSettingsPage() {
     if (faviconInputRef.current) faviconInputRef.current.value = "";
   };
 
+  /* ── Site Title Actions ── */
+  const saveSiteTitle = async () => {
+    setSavingSiteTitle(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      const { error: err } = await supabase
+        .from("site_settings")
+        .upsert({
+          key: "site_title",
+          value: siteTitle,
+          updated_at: new Date().toISOString()
+        });
+      if (err) throw err;
+      setCurrentSiteTitle(siteTitle);
+      setSuccess("প্রতিষ্ঠানের নাম সফলভাবে পরিবর্তন করা হয়েছে।");
+    } catch (err: any) {
+      setError("সংরক্ষণ করতে ব্যর্থ: " + (err.message || "অজানা ত্রুটি।"));
+    } finally {
+      setSavingSiteTitle(false);
+    }
+  };
+
   /* ── Privacy Settings Actions ── */
   const savePrivacySettings = async () => {
     setSavingPrivacy(true);
@@ -335,12 +368,10 @@ export default function AdminSettingsPage() {
 
   return (
     <div className="space-y-6 max-w-4xl text-left">
-      {/* Description */}
       <p className="text-slate-500 text-sm">
         ওয়েবসাইটের লোগো, ফেভিকন এবং হোমপেজ ব্যানার ছবি পরিবর্তন ও নিয়ন্ত্রণ করুন।
       </p>
 
-      {/* Notification Banner */}
       {success && (
         <div className="flex items-start gap-2.5 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs animate-slide-down">
           <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-500 mt-0.5" />
@@ -362,207 +393,176 @@ export default function AdminSettingsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           
-          {/* LEFT COLUMN: Logo & Favicon Card */}
+          {/* LEFT COLUMN: General Settings & Branding */}
           <div className="space-y-6">
             
-            {/* Institution Logo Card */}
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-xs">
+            {/* General Settings Card */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-5 shadow-xs">
               <h2 className="font-bold text-slate-800 text-sm flex items-center gap-2">
                 <Settings className="w-4 h-4 text-teal-600" />
-                প্রতিষ্ঠানের লোগো
+                সাধারণ সেটিংস
               </h2>
-              
-              <div className="flex items-center gap-6">
-                {/* Logo Preview */}
-                <div className="relative w-24 h-24 rounded-2xl overflow-hidden bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0">
-                  {previewLogoUrl ? (
-                    <Image
-                      src={previewLogoUrl}
-                      alt="Logo Preview"
-                      fill
-                      className="object-contain"
-                      unoptimized
+
+              <div className="space-y-4 text-left">
+                {/* Institution Name */}
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                    প্রতিষ্ঠানের নাম (Institution Name)
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={siteTitle}
+                      onChange={(e) => setSiteTitle(e.target.value)}
+                      placeholder="যেমন: মানবিক কলেজ কোচিং সেন্টার"
+                      className="flex-1 px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-teal-600/20 focus:border-teal-600 transition-all text-xs font-semibold text-left"
                     />
-                  ) : (
-                    <span className="text-slate-300 font-bold text-3xl">ম</span>
-                  )}
-                  {uploadingLogo && (
-                    <div className="absolute inset-0 bg-slate-900/40 flex items-center justify-center">
-                      <Loader2 className="w-5 h-5 text-white animate-spin" />
-                    </div>
-                  )}
+                    <button
+                      onClick={saveSiteTitle}
+                      disabled={siteTitle === currentSiteTitle || savingSiteTitle}
+                      className="inline-flex items-center justify-center px-4 py-2 bg-teal-600 hover:bg-teal-700 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0"
+                    >
+                      {savingSiteTitle ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "পরিবর্তন করুন"}
+                    </button>
+                  </div>
                 </div>
 
-                {/* Upload Button */}
-                <div className="space-y-2 flex-1">
-                  <p className="text-[11px] text-slate-500 leading-relaxed">
-                    লোগো ইমেজটি সাইডবার এবং টপবারে প্রদর্শিত হবে। বর্গাকার ছবি সবচেয়ে ভালো দেখায়।
-                  </p>
-                  <button
-                    onClick={() => logoInputRef.current?.click()}
-                    disabled={uploadingLogo}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
-                  >
-                    <Upload className="w-3.5 h-3.5" />
-                    আপলোড করুন
-                  </button>
-                  <input
-                    ref={logoInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleLogoChange}
-                    className="hidden"
-                  />
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
-                <button
-                  onClick={resetLogo}
-                  disabled={previewLogoUrl === currentLogoUrl || uploadingLogo || savingLogo}
-                  className="px-3.5 py-1.5 text-xs text-slate-500 hover:text-slate-700 font-semibold border border-slate-200 rounded-xl disabled:opacity-40 cursor-pointer"
-                >
-                  বাতিল
-                </button>
-                <button
-                  onClick={saveLogo}
-                  disabled={previewLogoUrl === currentLogoUrl || uploadingLogo || savingLogo}
-                  className="inline-flex items-center gap-1 px-4 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50 cursor-pointer"
-                >
-                  {savingLogo ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
-                  সংরক্ষণ করুন
-                </button>
-              </div>
-            </div>
-
-            {/* Favicon Card */}
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-xs">
-              <h2 className="font-bold text-slate-800 text-sm flex items-center gap-2">
-                <Image
-                  src={previewFaviconUrl || "/favicon.ico"}
-                  alt="Favicon Icon"
-                  width={16}
-                  height={16}
-                  className="object-contain"
-                  unoptimized
-                />
-                ওয়েবসাইট ফেভিকন
-              </h2>
-
-              <div className="flex items-center gap-6">
-                {/* Favicon Preview */}
-                <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0">
-                  {previewFaviconUrl ? (
-                    <Image
-                      src={previewFaviconUrl}
-                      alt="Favicon Preview"
-                      width={32}
-                      height={32}
-                      className="object-contain"
-                      unoptimized
-                    />
-                  ) : (
-                    <span className="text-slate-300 text-xs font-bold">ICO</span>
-                  )}
-                  {uploadingFavicon && (
-                    <div className="absolute inset-0 bg-slate-900/40 flex items-center justify-center">
-                      <Loader2 className="w-5 h-5 text-white animate-spin" />
-                    </div>
-                  )}
-                </div>
-
-                {/* Upload Button */}
-                <div className="space-y-2 flex-1">
-                  <p className="text-[11px] text-slate-500 leading-relaxed">
-                    ফেভিকনটি ব্রাউজারের ট্যাব বারে দেখা যাবে। 32×32 PNG বা ICO ছবি ব্যবহার করুন।
-                  </p>
-                  <button
-                    onClick={() => faviconInputRef.current?.click()}
-                    disabled={uploadingFavicon}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
-                  >
-                    <Upload className="w-3.5 h-3.5" />
-                    আপলোড করুন
-                  </button>
-                  <input
-                    ref={faviconInputRef}
-                    type="file"
-                    accept="image/x-icon, image/png, image/jpeg"
-                    onChange={handleFaviconChange}
-                    className="hidden"
-                  />
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
-                <button
-                  onClick={resetFavicon}
-                  disabled={previewFaviconUrl === currentFaviconUrl || uploadingFavicon || savingFavicon}
-                  className="px-3.5 py-1.5 text-xs text-slate-500 hover:text-slate-700 font-semibold border border-slate-200 rounded-xl disabled:opacity-40 cursor-pointer"
-                >
-                  বাতিল
-                </button>
-                <button
-                  onClick={saveFavicon}
-                  disabled={previewFaviconUrl === currentFaviconUrl || uploadingFavicon || savingFavicon}
-                  className="inline-flex items-center gap-1 px-4 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50 cursor-pointer"
-                >
-                  {savingFavicon ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
-                  সংরক্ষণ করুন
-                </button>
-              </div>
-            </div>
-
-            {/* Privacy Settings Card */}
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-xs">
-              <h2 className="font-bold text-slate-800 text-sm flex items-center gap-2">
-                <Eye className="w-4 h-4 text-teal-600" />
-                প্রাইভেসি সেটিংস
-              </h2>
-              
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3.5 bg-slate-50 rounded-xl border border-slate-100">
+                {/* Privacy Toggle */}
+                <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                   <div className="space-y-0.5 text-left pr-4">
-                    <p className="text-xs font-bold text-slate-800">পাবলিক শিক্ষার্থী তালিকা লুকান</p>
+                    <h3 className="text-xs font-bold text-slate-700">পাবলিক শিক্ষার্থী তালিকা লুকান</h3>
                     <p className="text-[10px] text-slate-400 leading-normal">
-                      এটি চালু করলে পাবলিক ওয়েবসাইট থেকে শিক্ষার্থীদের তালিকা ও মেনু লিংকটি সম্পূর্ণ লুকিয়ে ফেলা হবে।
+                      এটি চালু করলে পাবলিক ওয়েবসাইট থেকে শিক্ষার্থীদের তালিকা ও মেনু লিঙ্ক লুকিয়ে ফেলা হবে।
                     </p>
                   </div>
-                  <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                    <input
-                      type="checkbox"
-                      checked={hidePublicStudents}
-                      onChange={(e) => setHidePublicStudents(e.target.checked)}
-                      className="sr-only peer"
-                    />
-                    <div className="w-9 h-5 bg-slate-200 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-teal-600"></div>
-                  </label>
+                  <div className="flex items-center gap-3">
+                    <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                      <input
+                        type="checkbox"
+                        checked={hidePublicStudents}
+                        onChange={(e) => setHidePublicStudents(e.target.checked)}
+                        className="sr-only peer"
+                      />
+                      <div className="w-9 h-5 bg-slate-200 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-teal-600"></div>
+                    </label>
+                    <button
+                      onClick={savePrivacySettings}
+                      disabled={hidePublicStudents === currentHidePublicStudents || savingPrivacy}
+                      className="inline-flex items-center justify-center px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 disabled:opacity-50 text-slate-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                    >
+                      {savingPrivacy ? <Loader2 className="w-3 h-3 animate-spin" /> : "সংরক্ষণ"}
+                    </button>
+                  </div>
                 </div>
               </div>
+            </div>
 
-              {/* Actions */}
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
-                <button
-                  onClick={() => {
-                    setHidePublicStudents(currentHidePublicStudents);
-                    setSuccess(null);
-                    setError(null);
-                  }}
-                  disabled={hidePublicStudents === currentHidePublicStudents || savingPrivacy}
-                  className="px-3.5 py-1.5 text-xs text-slate-500 hover:text-slate-700 font-semibold border border-slate-200 rounded-xl disabled:opacity-40 cursor-pointer"
-                >
-                  বাতিল
-                </button>
-                <button
-                  onClick={savePrivacySettings}
-                  disabled={hidePublicStudents === currentHidePublicStudents || savingPrivacy}
-                  className="inline-flex items-center gap-1 px-4 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50 cursor-pointer"
-                >
-                  {savingPrivacy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
-                  সংরক্ষণ করুন
-                </button>
+            {/* Visual Branding Card */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-6 shadow-xs">
+              <h2 className="font-bold text-slate-800 text-sm flex items-center gap-2">
+                <Palette className="w-4 h-4 text-teal-600" />
+                ভিজ্যুয়াল ব্র্যান্ডিং
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+                {/* Logo Section */}
+                <div className="space-y-4 text-left">
+                  <h3 className="text-xs font-bold text-slate-700">প্রতিষ্ঠানের লোগো</h3>
+                  <div className="flex items-center gap-4">
+                    <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0">
+                      {previewLogoUrl ? (
+                        <Image
+                          src={previewLogoUrl}
+                          alt="Logo Preview"
+                          fill
+                          className="object-contain"
+                          unoptimized
+                        />
+                      ) : (
+                        <span className="text-slate-300 font-bold text-2xl">ম</span>
+                      )}
+                      {uploadingLogo && (
+                        <div className="absolute inset-0 bg-slate-900/40 flex items-center justify-center">
+                          <Loader2 className="w-5 h-5 text-white animate-spin" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <button
+                        onClick={() => logoInputRef.current?.click()}
+                        disabled={uploadingLogo}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-[11px] font-semibold transition-all cursor-pointer"
+                      >
+                        <Upload className="w-3 h-3" />
+                        আপলোড
+                      </button>
+                      <input
+                        ref={logoInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleLogoChange}
+                        className="hidden"
+                      />
+                    </div>
+                  </div>
+                  {/* Actions for Logo */}
+                  {(previewLogoUrl !== currentLogoUrl) && (
+                    <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
+                      <button onClick={resetLogo} className="px-2.5 py-1 text-[10px] text-slate-500 hover:text-slate-700 border border-slate-200 rounded-lg cursor-pointer">বাতিল</button>
+                      <button onClick={saveLogo} className="px-3 py-1 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-[10px] font-bold cursor-pointer">সংরক্ষণ</button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Favicon Section */}
+                <div className="space-y-4 text-left">
+                  <h3 className="text-xs font-bold text-slate-700">ওয়েবসাইট ফেভিকন</h3>
+                  <div className="flex items-center gap-4">
+                    <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0">
+                      {previewFaviconUrl ? (
+                        <Image
+                          src={previewFaviconUrl}
+                          alt="Favicon Preview"
+                          width={32}
+                          height={32}
+                          className="object-contain"
+                          unoptimized
+                        />
+                      ) : (
+                        <span className="text-slate-300 text-xs font-bold">ICO</span>
+                      )}
+                      {uploadingFavicon && (
+                        <div className="absolute inset-0 bg-slate-900/40 flex items-center justify-center">
+                          <Loader2 className="w-5 h-5 text-white animate-spin" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <button
+                        onClick={() => faviconInputRef.current?.click()}
+                        disabled={uploadingFavicon}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-[11px] font-semibold transition-all cursor-pointer"
+                      >
+                        <Upload className="w-3 h-3" />
+                        আপলোড
+                      </button>
+                      <input
+                        ref={faviconInputRef}
+                        type="file"
+                        accept="image/x-icon, image/png, image/jpeg"
+                        onChange={handleFaviconChange}
+                        className="hidden"
+                      />
+                    </div>
+                  </div>
+                  {/* Actions for Favicon */}
+                  {(previewFaviconUrl !== currentFaviconUrl) && (
+                    <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
+                      <button onClick={resetFavicon} className="px-2.5 py-1 text-[10px] text-slate-500 hover:text-slate-700 border border-slate-200 rounded-lg cursor-pointer">বাতিল</button>
+                      <button onClick={saveFavicon} className="px-3 py-1 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-[10px] font-bold cursor-pointer">সংরক্ষণ</button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -750,7 +750,6 @@ export default function AdminSettingsPage() {
               </div>
             </div>
           </div>
-
         </div>
       )}
 

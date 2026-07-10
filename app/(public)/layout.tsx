@@ -16,6 +16,7 @@ export default function PublicLayout({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [hidePublicStudents, setHidePublicStudents] = useState<boolean>(false);
+  const [siteTitle, setSiteTitle] = useState<string>("মানবিক কলেজ কোচিং সেন্টার");
 
   useEffect(() => {
     const supabase = createClient();
@@ -29,8 +30,10 @@ export default function PublicLayout({
           const favicon = data.find(s => s.key === "favicon_url")?.value || null;
           const hideStudents = data.find(s => s.key === "hide_public_students")?.value === "true";
           
+          const title = data.find(s => s.key === "site_title")?.value || "মানবিক কলেজ কোচিং সেন্টার";
           setLogoUrl(logo);
           setHidePublicStudents(hideStudents);
+          setSiteTitle(title);
 
           // Dynamically update head favicon tag on mount
           if (favicon) {
@@ -104,7 +107,7 @@ export default function PublicLayout({
             </div>
           )}
           <span className="font-extrabold text-xs text-white leading-snug">
-            মানবিক কলেজ কোচিং সেন্টার
+            {siteTitle}
           </span>
         </div>
 
@@ -194,7 +197,7 @@ export default function PublicLayout({
             </div>
           )}
           <span className="font-extrabold text-xs" style={{ color: "#2F5A8A" }}>
-            মানবিক কলেজ কোচিং সেন্টার
+            {siteTitle}
           </span>
         </Link>
         <button
@@ -317,12 +320,12 @@ export default function PublicLayout({
                 </div>
               )}
             </div>
-            <p className="text-xs font-bold text-white">মানবিক কলেজ কোচিং সেন্টার</p>
+            <p className="text-xs font-bold text-white">{siteTitle}</p>
             <p className="text-[10px]" style={{ color: "#E2E8F0" }}>
               এইচএসসি মানবিক (কলা) শাখার শিক্ষার্থীদের জন্য একটি বিশেষায়িত কোচিং সেন্টার
             </p>
             <p className="text-[10px] pt-2" style={{ color: "rgba(226, 232, 240, 0.7)" }}>
-              &copy; {new Date().getFullYear()} মানবিক কলেজ কোচিং সেন্টার। সর্বস্বত্ব সংরক্ষিত।
+              &copy; {new Date().getFullYear()} {siteTitle}। সর্বস্বত্ব সংরক্ষিত।
             </p>
             <p className="text-[10px] font-semibold" style={{ color: "#E2E8F0" }}>
               Developed with 💙 by Saddam Bin Mazid
