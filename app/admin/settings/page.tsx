@@ -13,6 +13,7 @@ import {
   RotateCcw,
   Eye,
   Settings,
+  FileText,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -48,6 +49,15 @@ export default function AdminSettingsPage() {
   const [currentHidePublicStudents, setCurrentHidePublicStudents] = useState<boolean>(false);
   const [savingPrivacy, setSavingPrivacy] = useState(false);
 
+  // Hero Section Text State
+  const [heroBadge, setHeroBadge] = useState("এইচএসসি প্রস্তুতি ২০২৬");
+  const [currentHeroBadge, setCurrentHeroBadge] = useState("এইচএসসি প্রস্তুতি ২০২৬");
+  const [heroHeading, setHeroHeading] = useState("মানবিক বিভাগের জন্য ত্রিশালের সেরা কলেজ কোচিং সেন্টার");
+  const [currentHeroHeading, setCurrentHeroHeading] = useState("মানবিক বিভাগের জন্য ত্রিশালের সেরা কলেজ কোচিং সেন্টার");
+  const [heroDescription, setHeroDescription] = useState("বাংলা, ইংরেজি, ইতিহাস, যুক্তিবিদ্যা, পৌরনীতি, অর্থনীতি ও সমাজবিজ্ঞানসহ মানবিক বিভাগের সকল বিষয়ের বিশেষায়িত ও মানসম্মত শিক্ষাদান।");
+  const [currentHeroDescription, setCurrentHeroDescription] = useState("বাংলা, ইংরেজি, ইতিহাস, যুক্তিবিদ্যা, পৌরনীতি, অর্থনীতি ও সমাজবিজ্ঞানসহ মানবিক বিভাগের সকল বিষয়ের বিশেষায়িত ও মানসম্মত শিক্ষাদান।");
+  const [savingHeroText, setSavingHeroText] = useState(false);
+
   // General Page State
   const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState<string | null>(null);
@@ -71,6 +81,9 @@ export default function AdminSettingsPage() {
         const logo = data?.find(s => s.key === "logo_url")?.value || null;
         const favicon = data?.find(s => s.key === "favicon_url")?.value || null;
         const hideStudents = data?.find(s => s.key === "hide_public_students")?.value === "true";
+        const badge = data?.find(s => s.key === "hero_badge")?.value || "এইচএসসি প্রস্তুতি ২০২৬";
+        const heading = data?.find(s => s.key === "hero_heading")?.value || "মানবিক বিভাগের জন্য ত্রিশালের সেরা কলেজ কোচিং সেন্টার";
+        const description = data?.find(s => s.key === "hero_description")?.value || "বাংলা, ইংরেজি, ইতিহাস, যুক্তিবিদ্যা, পৌরনীতি, অর্থনীতি ও সমাজবিজ্ঞানসহ মানবিক বিভাগের সকল বিষয়ের বিশেষায়িত ও মানসম্মত শিক্ষাদান।";
 
         setCurrentBannerUrl(banner);
         setPreviewBannerUrl(banner);
@@ -83,6 +96,13 @@ export default function AdminSettingsPage() {
 
         setHidePublicStudents(hideStudents);
         setCurrentHidePublicStudents(hideStudents);
+
+        setHeroBadge(badge);
+        setCurrentHeroBadge(badge);
+        setHeroHeading(heading);
+        setCurrentHeroHeading(heading);
+        setHeroDescription(description);
+        setCurrentHeroDescription(description);
       } catch (err: any) {
         setError("সেটিংস লোড করতে সমস্যা হয়েছে।");
       } finally {
@@ -271,6 +291,44 @@ export default function AdminSettingsPage() {
     } finally {
       setSavingPrivacy(false);
     }
+  /* ── Hero Section Text Actions ── */
+  const saveHeroText = async () => {
+    setSavingHeroText(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      const { error: err1 } = await supabase
+        .from("site_settings")
+        .upsert({ key: "hero_badge", value: heroBadge, updated_at: new Date().toISOString() });
+      if (err1) throw err1;
+
+      const { error: err2 } = await supabase
+        .from("site_settings")
+        .upsert({ key: "hero_heading", value: heroHeading, updated_at: new Date().toISOString() });
+      if (err2) throw err2;
+
+      const { error: err3 } = await supabase
+        .from("site_settings")
+        .upsert({ key: "hero_description", value: heroDescription, updated_at: new Date().toISOString() });
+      if (err3) throw err3;
+
+      setCurrentHeroBadge(heroBadge);
+      setCurrentHeroHeading(heroHeading);
+      setCurrentHeroDescription(heroDescription);
+      setSuccess("হিরো সেকশনের টেক্সট সফলভাবে সংরক্ষণ করা হয়েছে।");
+    } catch (err: any) {
+      setError("সংরক্ষণ করতে ব্যর্থ: " + (err.message || "অজানা ত্রুটি।"));
+    } finally {
+      setSavingHeroText(false);
+    }
+  };
+
+  const resetHeroText = () => {
+    setHeroBadge(currentHeroBadge);
+    setHeroHeading(currentHeroHeading);
+    setHeroDescription(currentHeroDescription);
+    setSuccess(null);
+    setError(null);
   };
 
   return (
@@ -607,6 +665,84 @@ export default function AdminSettingsPage() {
                   className="inline-flex items-center gap-1 px-4 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50 cursor-pointer"
                 >
                   {savingBanner ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
+                  সংরক্ষণ করুন
+                </button>
+              </div>
+            </div>
+
+            {/* Hero Section Text Card */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-xs">
+              <h2 className="font-bold text-slate-800 text-sm flex items-center gap-2">
+                <FileText className="w-4 h-4 text-teal-600" />
+                হিরো সেকশন টেক্সট
+              </h2>
+
+              <div className="space-y-4 text-left">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                    ব্যাজ টেক্সট (Badge Text)
+                  </label>
+                  <input
+                    type="text"
+                    value={heroBadge}
+                    onChange={(e) => setHeroBadge(e.target.value)}
+                    placeholder="যেমন: এইচএসসি প্রস্তুতি ২০২৬"
+                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-teal-600/20 focus:border-teal-600 transition-all text-xs font-semibold text-left"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                    মূল শিরোনাম (Main Heading)
+                  </label>
+                  <input
+                    type="text"
+                    value={heroHeading}
+                    onChange={(e) => setHeroHeading(e.target.value)}
+                    placeholder="যেমন: মানবিক বিভাগের জন্য ত্রিশালের সেরা কলেজ কোচিং সেন্টার"
+                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-teal-600/20 focus:border-teal-600 transition-all text-xs font-semibold text-left"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                    বর্ণনা (Description)
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={heroDescription}
+                    onChange={(e) => setHeroDescription(e.target.value)}
+                    placeholder="কোচিং সেন্টারের বিবরণ বা স্লোগান..."
+                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-teal-600/20 focus:border-teal-600 transition-all text-xs leading-relaxed font-semibold resize-none text-left"
+                  />
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                <button
+                  onClick={resetHeroText}
+                  disabled={
+                    (heroBadge === currentHeroBadge &&
+                      heroHeading === currentHeroHeading &&
+                      heroDescription === currentHeroDescription) ||
+                    savingHeroText
+                  }
+                  className="px-3.5 py-1.5 text-xs text-slate-500 hover:text-slate-700 font-semibold border border-slate-200 rounded-xl disabled:opacity-40 cursor-pointer"
+                >
+                  বাতিল
+                </button>
+                <button
+                  onClick={saveHeroText}
+                  disabled={
+                    (heroBadge === currentHeroBadge &&
+                      heroHeading === currentHeroHeading &&
+                      heroDescription === currentHeroDescription) ||
+                    savingHeroText
+                  }
+                  className="inline-flex items-center gap-1 px-4 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50 cursor-pointer"
+                >
+                  {savingHeroText ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
                   সংরক্ষণ করুন
                 </button>
               </div>

@@ -51,6 +51,9 @@ export default function PublicHomePage() {
   const [loading, setLoading] = useState(true);
   const [heroBannerUrl, setHeroBannerUrl] = useState("/images/hero_banner.png");
   const [isBannerLoaded, setIsBannerLoaded] = useState(false);
+  const [heroBadge, setHeroBadge] = useState("এইচএসসি প্রস্তুতি ২০২৬");
+  const [heroHeading, setHeroHeading] = useState("মানবিক বিভাগের জন্য ত্রিশালের সেরা কলেজ কোচিং সেন্টার");
+  const [heroDescription, setHeroDescription] = useState("বাংলা, ইংরেজি, ইতিহাস, যুক্তিবিদ্যা, পৌরনীতি, অর্থনীতি ও সমাজবিজ্ঞানসহ মানবিক বিভাগের সকল বিষয়ের বিশেষায়িত ও মানসম্মত শিক্ষাদান।");
 
   useEffect(() => {
     const supabaseClient = createClient();
@@ -60,7 +63,7 @@ export default function PublicHomePage() {
           supabaseClient.from("view_public_students").select("id", { count: "exact", head: true }),
           supabaseClient.from("view_public_teachers").select("id", { count: "exact", head: true }),
           supabaseClient.from("batches").select("id, name").limit(10),
-          supabaseClient.from("site_settings").select("value").eq("key", "hero_banner_url").single(),
+          supabaseClient.from("site_settings").select("key, value"),
         ]);
         if (stdRes.error) console.error("students count error:", stdRes.error);
         if (teachRes.error) console.error("teachers count error:", teachRes.error);
@@ -69,20 +72,30 @@ export default function PublicHomePage() {
         setTeacherCount(teachRes.count ?? 0);
         setBatches(batchRes.data || []);
         
-        if (settingsRes.data?.value) {
-          const newUrl = settingsRes.data.value;
-          // Preload the custom banner image in the background
-          const img = new window.Image();
-          img.src = newUrl;
-          img.onload = () => {
-            setIsBannerLoaded(false); // start fade-out transition
-            setTimeout(() => {
-              setHeroBannerUrl(newUrl); // swap image once fully transparent
-            }, 300);
-          };
-          img.onerror = () => {
-            setHeroBannerUrl(newUrl); // fallback directly on error
-          };
+        if (settingsRes.data) {
+          const banner = settingsRes.data.find(s => s.key === "hero_banner_url")?.value;
+          const badge = settingsRes.data.find(s => s.key === "hero_badge")?.value;
+          const heading = settingsRes.data.find(s => s.key === "hero_heading")?.value;
+          const description = settingsRes.data.find(s => s.key === "hero_description")?.value;
+
+          if (badge) setHeroBadge(badge);
+          if (heading) setHeroHeading(heading);
+          if (description) setHeroDescription(description);
+
+          if (banner) {
+            // Preload the custom banner image in the background
+            const img = new window.Image();
+            img.src = banner;
+            img.onload = () => {
+              setIsBannerLoaded(false); // start fade-out transition
+              setTimeout(() => {
+                setHeroBannerUrl(banner); // swap image once fully transparent
+              }, 300);
+            };
+            img.onerror = () => {
+              setHeroBannerUrl(banner); // fallback directly on error
+            };
+          }
         }
       } catch (err) {
         console.error("Error fetching stats:", err);
@@ -202,22 +215,21 @@ export default function PublicHomePage() {
             }}
           >
             <Sparkles className="w-3.5 h-3.5 text-yellow-300 animate-pulse-soft" />
-            এইচএসসি প্রস্তুতি ২০২৬
+            {heroBadge}
           </span>
-
+ 
           <h1
-            className="animate-fade-in-up stagger-1 text-3xl md:text-5xl font-black leading-tight max-w-2xl"
+            className="animate-fade-in-up stagger-1 text-3xl md:text-5xl font-black leading-tight max-w-2xl text-left"
             style={{ textShadow: "0 2px 20px rgba(0,0,0,0.45)" }}
           >
-            মানবিক বিভাগের জন্য ত্রিশালের সেরা কলেজ কোচিং সেন্টার
+            {heroHeading}
           </h1>
-
+ 
           <p
-            className="animate-fade-in-up stagger-2 text-sm md:text-base leading-relaxed max-w-xl"
+            className="animate-fade-in-up stagger-2 text-sm md:text-base leading-relaxed max-w-xl text-left"
             style={{ color: "rgba(255,255,255,0.85)", textShadow: "0 1px 8px rgba(0,0,0,0.3)" }}
           >
-            বাংলা, ইংরেজি, ইতিহাস, যুক্তিবিদ্যা, পৌরনীতি, অর্থনীতি ও সমাজবিজ্ঞানসহ মানবিক বিভাগের
-            সকল বিষয়ের বিশেষায়িত ও মানসম্মত শিক্ষাদান।
+            {heroDescription}
           </p>
 
           <div className="animate-fade-in-up stagger-3 flex flex-wrap items-center gap-3 pt-1">
