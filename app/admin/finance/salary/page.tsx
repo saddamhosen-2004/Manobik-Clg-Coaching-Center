@@ -13,6 +13,7 @@ import {
   Calendar,
   DollarSign,
   X,
+  Edit,
 } from "lucide-react";
 
 interface Teacher {
@@ -51,6 +52,15 @@ export default function SalaryPage() {
   const [amount, setAmount] = useState("");
   const [paidDate, setPaidDate] = useState(new Date().toISOString().split("T")[0]);
   const [submitting, setSubmitting] = useState(false);
+
+  // Edit Modal States
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editingRecord, setEditingRecord] = useState<SalaryRecord | null>(null);
+  const [editTeacherId, setEditTeacherId] = useState("");
+  const [editMonth, setEditMonth] = useState("জানুয়ারি");
+  const [editYear, setEditYear] = useState(new Date().getFullYear().toString());
+  const [editAmount, setEditAmount] = useState("");
+  const [editPaidDate, setEditPaidDate] = useState(new Date().toISOString().split("T")[0]);
 
   // Delete state
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -173,6 +183,57 @@ export default function SalaryPage() {
     }
   };
 
+  const handleOpenEditModal = (record: SalaryRecord) => {
+    setEditingRecord(record);
+    setEditTeacherId(record.teacher_id);
+    setEditMonth(record.month);
+    setEditYear(record.year.toString());
+    setEditAmount(record.amount.toString());
+    setEditPaidDate(record.paid_date);
+
+    setError(null);
+    setSuccess(null);
+    setEditModalOpen(true);
+  };
+
+  const handleEditSalary = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingRecord) return;
+    setSubmitting(true);
+    setError(null);
+    setSuccess(null);
+
+    if (!editTeacherId || !editMonth || !editYear || !editAmount || !editPaidDate) {
+      setError("অনুগ্রহ করে সব তথ্য সঠিকভাবে পূরণ করুন।");
+      setSubmitting(false);
+      return;
+    }
+
+    try {
+      const { error: updateErr } = await supabase
+        .from("teacher_salaries")
+        .update({
+          teacher_id: editTeacherId,
+          month: editMonth,
+          year: parseInt(editYear),
+          amount: parseFloat(editAmount),
+          paid_date: editPaidDate,
+        })
+        .eq("id", editingRecord.id);
+
+      if (updateErr) throw updateErr;
+
+      setSuccess("বেতন প্রদানের বিবরণ সফলভাবে সংশোধন করা হয়েছে।");
+      setEditModalOpen(false);
+      setEditingRecord(null);
+      fetchData();
+    } catch (err: any) {
+      setError(err.message || "সংশোধন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const confirmDelete = (record: SalaryRecord) => {
     setSalaryToDelete(record);
     setDeleteConfirmOpen(true);
@@ -262,13 +323,22 @@ export default function SalaryPage() {
                 {salaries.map((sal) => (
                   <tr key={sal.id} className="text-slate-700 hover:bg-slate-50/50">
                     <td className="px-6 py-4">
-                      <button
-                        onClick={() => confirmDelete(sal)}
-                        className="p-1.5 hover:bg-rose-50 hover:text-rose-600 rounded-lg text-slate-400 transition-colors"
-                        title="মুছে ফেলুন"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => handleOpenEditModal(sal)}
+                          className="p-1.5 hover:bg-teal-50 hover:text-teal-600 rounded-lg text-slate-400 transition-colors cursor-pointer"
+                          title="সংশোধন করুন"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => confirmDelete(sal)}
+                          className="p-1.5 hover:bg-rose-50 hover:text-rose-600 rounded-lg text-slate-400 transition-colors cursor-pointer"
+                          title="মুছে ফেলুন"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
                     <td className="px-6 py-4 text-slate-500">
                       {new Date(sal.paid_date).toLocaleDateString("bn-BD")}
@@ -419,6 +489,152 @@ export default function SalaryPage() {
                     </>
                   ) : (
                     <span>বেতন পরিশোধ সম্পন্ন</span>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Salary Modal */}
+      {editModalOpen && editingRecord && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <div className="bg-white w-full max-w-md rounded-2xl shadow-xl border border-slate-200 overflow-hidden animate-scale-up">
+            <div className="flex items-center justify-between h-14 px-6 border-b border-slate-100 bg-slate-50">
+              <h3 className="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+                <Coins className="w-4 h-4 text-teal-600" />
+                <span>বেতন সংশোধন ফরম</span>
+              </h3>
+              <button
+                onClick={() => {
+                  setEditModalOpen(false);
+                  setEditingRecord(null);
+                }}
+                className="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-1 rounded-lg transition-colors cursor-pointer"
+                title="বন্ধ করুন"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleEditSalary} className="p-6 space-y-4">
+              <div>
+                <label className="block text-slate-700 text-xs font-semibold mb-1.5">
+                  শিক্ষক নির্বাচন করুন
+                </label>
+                <select
+                  value={editTeacherId}
+                  required
+                  onChange={(e) => {
+                    const newTeacherId = e.target.value;
+                    setEditTeacherId(newTeacherId);
+                    const teacher = teachers.find((t) => t.id === newTeacherId);
+                    if (teacher) {
+                      setEditAmount(teacher.monthly_salary.toString());
+                    }
+                  }}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-teal-600/20 focus:border-teal-600 transition-all text-xs"
+                >
+                  <option value="">-- শিক্ষক নির্বাচন করুন --</option>
+                  {teachers.map((teacher) => (
+                    <option key={teacher.id} value={teacher.id}>
+                      {teacher.name} (বেতন: ৳{teacher.monthly_salary})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-slate-700 text-xs font-semibold mb-1.5">
+                    পরিশোধের মাস
+                  </label>
+                  <select
+                    value={editMonth}
+                    onChange={(e) => setEditMonth(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-teal-600/20 focus:border-teal-600 transition-all text-xs"
+                  >
+                    {banglaMonths.map((m) => (
+                      <option key={m} value={m}>
+                        {m}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-slate-700 text-xs font-semibold mb-1.5">
+                    বছর
+                  </label>
+                  <select
+                    value={editYear}
+                    onChange={(e) => setEditYear(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-teal-600/20 focus:border-teal-600 transition-all text-xs"
+                  >
+                    <option value={new Date().getFullYear() - 1}>
+                      {(new Date().getFullYear() - 1).toString()}
+                    </option>
+                    <option value={new Date().getFullYear()}>
+                      {new Date().getFullYear().toString()}
+                    </option>
+                    <option value={new Date().getFullYear() + 1}>
+                      {(new Date().getFullYear() + 1).toString()}
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-slate-700 text-xs font-semibold mb-1.5">
+                    বেতনের পরিমাণ (৳)
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    value={editAmount}
+                    onChange={(e) => setEditAmount(e.target.value)}
+                    placeholder="বেতন পরিমাণ"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-teal-600/20 focus:border-teal-600 transition-all text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-700 text-xs font-semibold mb-1.5">
+                    পরিশোধের তারিখ
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    value={editPaidDate}
+                    onChange={(e) => setEditPaidDate(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-teal-600/20 focus:border-teal-600 transition-all text-xs"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-4 flex items-center justify-end gap-2 border-t border-slate-100 mt-6">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditModalOpen(false);
+                    setEditingRecord(null);
+                  }}
+                  className="px-4 py-2 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-xl text-xs font-semibold cursor-pointer"
+                >
+                  বাতিল
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="flex items-center justify-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-700 disabled:bg-teal-600/70 text-white rounded-xl text-xs font-semibold transition-all cursor-pointer"
+                >
+                  {submitting ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>সংশোধন হচ্ছে...</span>
+                    </>
+                  ) : (
+                    <span>সংশোধন সংরক্ষণ করুন</span>
                   )}
                 </button>
               </div>
