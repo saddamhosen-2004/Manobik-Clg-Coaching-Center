@@ -87,9 +87,9 @@ export default function PublicResultSearchPage() {
 
     setDownloading(examId);
 
-    // 1. Create a wrapper positioned invisibly within viewport bounds to ensure mobile browser paints it
+    // 1. Create a wrapper positioned invisibly in document flow to ensure mobile browser paints full layout without clipping
     const wrapper = document.createElement("div");
-    wrapper.style.position = "fixed";
+    wrapper.style.position = "absolute";
     wrapper.style.top = "0px";
     wrapper.style.left = "0px";
     wrapper.style.width = "720px";
