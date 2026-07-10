@@ -190,37 +190,37 @@ export default function ExpensesPage() {
             <table className="w-full text-left border-collapse text-sm">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200/60 text-slate-500 font-semibold">
-                  <th className="px-6 py-4">পদক্ষেপ</th>
-                  <th className="px-6 py-4">তারিখ</th>
-                  <th className="px-6 py-4">টাকার পরিমাণ</th>
-                  <th className="px-6 py-4">ক্যাটেগরি</th>
                   <th className="px-6 py-4">খরচের শিরোনাম</th>
+                  <th className="px-6 py-4">ক্যাটেগরি</th>
+                  <th className="px-6 py-4">টাকার পরিমাণ</th>
+                  <th className="px-6 py-4">তারিখ</th>
+                  <th className="px-6 py-4 text-center">পদক্ষেপ</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {expenses.map((exp) => (
                   <tr key={exp.id} className="text-slate-700 hover:bg-slate-50/50">
-                    <td className="px-6 py-4">
-                      <button
-                        onClick={() => confirmDelete(exp)}
-                        className="p-1.5 hover:bg-rose-50 hover:text-rose-600 rounded-lg text-slate-400 transition-colors"
-                        title="মুছে ফেলুন"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </td>
-                    <td className="px-6 py-4 text-slate-500">
-                      {new Date(exp.expense_date).toLocaleDateString("bn-BD")}
-                    </td>
-                    <td className="px-6 py-4 font-bold text-slate-900">
-                      ৳ {Number(exp.amount).toLocaleString("bn-BD")}
-                    </td>
+                    <td className="px-6 py-4 font-bold text-slate-900">{exp.title}</td>
                     <td className="px-6 py-4">
                       <span className="px-2.5 py-1 bg-slate-100 border border-slate-200 text-slate-600 rounded-lg text-xs font-semibold">
                         {exp.category}
                       </span>
                     </td>
-                    <td className="px-6 py-4 font-bold text-slate-900">{exp.title}</td>
+                    <td className="px-6 py-4 font-bold text-slate-900">
+                      ৳ {Number(exp.amount).toLocaleString("bn-BD")}
+                    </td>
+                    <td className="px-6 py-4 text-slate-500">
+                      {new Date(exp.expense_date).toLocaleDateString("bn-BD")}
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <button
+                        onClick={() => confirmDelete(exp)}
+                        className="p-1.5 hover:bg-rose-50 hover:text-rose-600 rounded-lg text-slate-400 transition-colors cursor-pointer"
+                        title="মুছে ফেলুন"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>

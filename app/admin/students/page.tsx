@@ -545,13 +545,13 @@ export default function StudentsPage() {
                 {/* Basic Details */}
                 <div className="flex-1 min-w-0 flex flex-col justify-between text-left">
                   <div>
-                    <div className="flex items-center justify-end gap-1.5">
-                      <span className="px-2 py-0.5 bg-teal-50 text-teal-700 border border-teal-100 rounded-md text-[10px] font-bold">
-                        {student.student_id}
-                      </span>
+                    <div className="flex flex-wrap items-center gap-1.5">
                       <h4 className="font-bold text-slate-900 text-sm truncate">
                         {student.name}
                       </h4>
+                      <span className="px-2 py-0.5 bg-teal-50 text-teal-700 border border-teal-100 rounded-md text-[10px] font-bold font-mono">
+                        {student.student_id}
+                      </span>
                     </div>
                     <p className="text-[11px] text-slate-500 mt-1 truncate">
                       {student.college_name} • {student.college_year}

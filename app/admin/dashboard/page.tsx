@@ -203,7 +203,7 @@ export default function DashboardPage() {
           return (
             <div
               key={i}
-              className={`flex items-center justify-between p-6 bg-white border rounded-2xl shadow-xs transition-all hover:shadow-md hover:scale-[1.01]`}
+              className="flex items-center justify-between p-6 bg-white border border-slate-200/60 rounded-2xl shadow-xs transition-all md:hover:shadow-md md:hover:scale-[1.01]"
             >
               <div className="space-y-1">
                 <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">
@@ -305,7 +305,7 @@ export default function DashboardPage() {
               প্রস্তুতি প্রোগ্রাম রিসেন্ট ভর্তি
             </h3>
             <Link
-              href="/preparation-program"
+              href="/admin/preparation-program"
               className="flex items-center gap-1 text-teal-600 hover:text-teal-700 text-xs font-bold transition-colors"
             >
               <span>সব দেখুন</span>
@@ -359,7 +359,7 @@ export default function DashboardPage() {
 
           <div className="grid grid-cols-1 gap-3">
             <Link
-              href="/batches"
+              href="/admin/batches"
               className="flex items-center gap-3 p-4 rounded-xl bg-slate-50 hover:bg-teal-50 border border-slate-200/50 hover:border-teal-200 text-slate-700 hover:text-teal-800 transition-all group"
             >
               <PlusCircle className="w-5 h-5 text-slate-400 group-hover:text-teal-600 shrink-0" />
@@ -370,7 +370,7 @@ export default function DashboardPage() {
             </Link>
 
             <Link
-              href="/subjects"
+              href="/admin/subjects"
               className="flex items-center gap-3 p-4 rounded-xl bg-slate-50 hover:bg-teal-50 border border-slate-200/50 hover:border-teal-200 text-slate-700 hover:text-teal-800 transition-all group"
             >
               <PlusCircle className="w-5 h-5 text-slate-400 group-hover:text-teal-600 shrink-0" />
@@ -381,7 +381,7 @@ export default function DashboardPage() {
             </Link>
 
             <Link
-              href="/exams"
+              href="/admin/exams"
               className="flex items-center gap-3 p-4 rounded-xl bg-slate-50 hover:bg-teal-50 border border-slate-200/50 hover:border-teal-200 text-slate-700 hover:text-teal-800 transition-all group"
             >
               <PlusCircle className="w-5 h-5 text-slate-400 group-hover:text-teal-600 shrink-0" />

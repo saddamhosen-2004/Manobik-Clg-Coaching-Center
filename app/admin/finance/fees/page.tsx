@@ -583,21 +583,44 @@ export default function FeesPage() {
               <table className="w-full text-left border-collapse text-sm">
                 <thead>
                   <tr className="bg-slate-50 border-b border-slate-200/60 text-slate-500 font-semibold">
-                    <th className="px-6 py-4">প্রিন্ট</th>
-                    <th className="px-6 py-4">পরিশোধের তারিখ</th>
-                    <th className="px-6 py-4">পরিশোধিত টাকা</th>
-                    <th className="px-6 py-4">মাসের নাম</th>
-                    <th className="px-6 py-4">ব্যাচ</th>
-                    <th className="px-6 py-4">রোল/আইডি</th>
                     <th className="px-6 py-4">নাম</th>
+                    <th className="px-6 py-4">রোল/আইডি</th>
+                    <th className="px-6 py-4">ব্যাচ</th>
+                    <th className="px-6 py-4">মাসের নাম</th>
+                    <th className="px-6 py-4">পরিশোধিত টাকা</th>
+                    <th className="px-6 py-4">পরিশোধের তারিখ</th>
                     <th className="px-6 py-4">রসিদ নম্বর</th>
+                    <th className="px-6 py-4 text-center">রসিদ প্রিন্ট</th>
                     <th className="px-6 py-4 text-center">পদক্ষেপ</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {filteredCollections.map((col) => (
                     <tr key={col.id} className="text-slate-700 hover:bg-slate-50/50">
+                      <td className="px-6 py-4 font-bold text-slate-900">
+                        {col.students?.name}
+                      </td>
+                      <td className="px-6 py-4 font-semibold text-slate-700">
+                        {col.students?.student_id}
+                      </td>
+                      <td className="px-6 py-4 text-slate-400">
+                        {col.students?.batches?.name || "নির্ধারিত নেই"}
+                      </td>
                       <td className="px-6 py-4">
+                        <span className="px-2 py-0.5 bg-teal-50 border border-teal-100 text-teal-700 rounded-md font-semibold text-[10px]">
+                          {col.month} {col.year}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 font-bold text-slate-900">
+                        ৳ {Number(col.amount).toLocaleString("bn-BD")}
+                      </td>
+                      <td className="px-6 py-4 text-slate-500">
+                        {new Date(col.paid_date).toLocaleDateString("bn-BD")}
+                      </td>
+                      <td className="px-6 py-4 font-mono font-bold text-slate-400 text-xs">
+                        {col.receipt_number}
+                      </td>
+                      <td className="px-6 py-4 text-center">
                         <button
                           onClick={() => handleTriggerPrint(col)}
                           className="inline-flex items-center gap-1 px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-semibold transition-all cursor-pointer"
@@ -605,29 +628,6 @@ export default function FeesPage() {
                           <Printer className="w-3.5 h-3.5" />
                           <span>রসিদ</span>
                         </button>
-                      </td>
-                      <td className="px-6 py-4 text-slate-500">
-                        {new Date(col.paid_date).toLocaleDateString("bn-BD")}
-                      </td>
-                      <td className="px-6 py-4 font-bold text-slate-900">
-                        ৳ {Number(col.amount).toLocaleString("bn-BD")}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="px-2 py-0.5 bg-teal-50 border border-teal-100 text-teal-700 rounded-md font-semibold text-[10px]">
-                          {col.month} {col.year}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-slate-400">
-                        {col.students?.batches?.name || "নির্ধারিত নেই"}
-                      </td>
-                      <td className="px-6 py-4 font-semibold text-slate-700">
-                        {col.students?.student_id}
-                      </td>
-                      <td className="px-6 py-4 font-bold text-slate-900">
-                        {col.students?.name}
-                      </td>
-                      <td className="px-6 py-4 font-mono font-bold text-slate-400 text-xs">
-                        {col.receipt_number}
                       </td>
                       <td className="px-6 py-4 text-center">
                         <div className="flex items-center justify-center gap-1.5">
