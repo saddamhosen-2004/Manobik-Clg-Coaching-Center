@@ -87,15 +87,19 @@ export default function PublicResultSearchPage() {
 
     setDownloading(examId);
 
-    // 1. Create a wrapper positioned invisibly in document flow to ensure mobile browser paints full layout without clipping
+    // 1. Create a 1px container with overflow:hidden to hide it from view without using opacity/visibility
+    const container = document.createElement("div");
+    container.style.position = "absolute";
+    container.style.top = "0px";
+    container.style.left = "0px";
+    container.style.width = "1px";
+    container.style.height = "1px";
+    container.style.overflow = "hidden";
+    container.style.zIndex = "-9999";
+    container.style.pointerEvents = "none";
+
     const wrapper = document.createElement("div");
-    wrapper.style.position = "absolute";
-    wrapper.style.top = "0px";
-    wrapper.style.left = "0px";
     wrapper.style.width = "720px";
-    wrapper.style.opacity = "0.01";
-    wrapper.style.pointerEvents = "none";
-    wrapper.style.zIndex = "-9999";
 
     // 2. Clone the element
     const clone = element.cloneNode(true) as HTMLElement;
@@ -104,9 +108,10 @@ export default function PublicResultSearchPage() {
     clone.style.left = "0px";
     clone.style.width = "100%";
 
-    // 3. Append clone to wrapper, and wrapper to body
+    // 3. Append to DOM
     wrapper.appendChild(clone);
-    document.body.appendChild(wrapper);
+    container.appendChild(wrapper);
+    document.body.appendChild(container);
 
     // Remove animations to prevent elements starting at opacity-0 in html-to-image
     [clone, ...clone.querySelectorAll("*")].forEach((el) => {
@@ -117,6 +122,14 @@ export default function PublicResultSearchPage() {
         }
       });
     });
+
+    // Disable dark mode temporarily on document root during capture to prevent dark theme inversion
+    const htmlElement = document.documentElement;
+    const bodyElement = document.body;
+    const hadDarkHTML = htmlElement.classList.contains("dark");
+    const hadDarkBody = bodyElement.classList.contains("dark");
+    if (hadDarkHTML) htmlElement.classList.remove("dark");
+    if (hadDarkBody) bodyElement.classList.remove("dark");
 
     try {
       // 4. Generate PNG from the clone (not the wrapper)
@@ -144,8 +157,12 @@ export default function PublicResultSearchPage() {
     } catch (err) {
       console.error("Error generating marksheet image:", err);
     } finally {
-      // 5. Clean up the wrapper from the DOM
-      document.body.removeChild(wrapper);
+      // Restore dark mode if it was enabled
+      if (hadDarkHTML) htmlElement.classList.add("dark");
+      if (hadDarkBody) bodyElement.classList.add("dark");
+
+      // Clean up DOM
+      document.body.removeChild(container);
       setDownloading(null);
     }
   };
