@@ -83,12 +83,15 @@ export default function PublicExamSchedulePage() {
     if (!routineRef.current) return;
     setDownloading(true);
     
-    // 1. Create a wrapper positioned off-screen
+    // 1. Create a wrapper positioned invisibly within viewport bounds to ensure mobile browser paints it
     const wrapper = document.createElement("div");
-    wrapper.style.position = "absolute";
-    wrapper.style.top = "-9999px";
-    wrapper.style.left = "-9999px";
+    wrapper.style.position = "fixed";
+    wrapper.style.top = "0px";
+    wrapper.style.left = "0px";
     wrapper.style.width = "1024px";
+    wrapper.style.opacity = "0.01";
+    wrapper.style.pointerEvents = "none";
+    wrapper.style.zIndex = "-9999";
     
     // 2. Clone the element
     const clone = routineRef.current.cloneNode(true) as HTMLElement;
