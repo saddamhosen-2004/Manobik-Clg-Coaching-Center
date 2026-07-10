@@ -189,40 +189,40 @@ export default function ReportsPage() {
           <h4 className="font-bold text-slate-800 border-b border-slate-200 pb-2">১. আয়সমূহ (Incomes)</h4>
           <div className="space-y-2">
             <div className="flex justify-between">
-              <span>৳ {report.regularFees.toLocaleString("bn-BD")}</span>
-              <span>শিক্ষার্থীদের নিয়মিত ফিস:</span>
+              <span className="text-slate-500">শিক্ষার্থীদের নিয়মিত ফিস:</span>
+              <span className="font-bold text-slate-800">৳ {report.regularFees.toLocaleString("bn-BD")}</span>
             </div>
             <div className="flex justify-between">
-              <span>৳ {report.prepFees.toLocaleString("bn-BD")}</span>
-              <span>প্রস্তুতি প্রোগ্রাম ফিস:</span>
+              <span className="text-slate-500">প্রস্তুতি প্রোগ্রাম ফিস:</span>
+              <span className="font-bold text-slate-800">৳ {report.prepFees.toLocaleString("bn-BD")}</span>
             </div>
             <div className="flex justify-between font-bold border-t border-slate-100 pt-2 text-slate-900">
-              <span>৳ {report.totalIncome.toLocaleString("bn-BD")}</span>
-              <span>সর্বমোট আয়:</span>
+              <span className="text-slate-900">সর্বমোট আয়:</span>
+              <span className="text-slate-900">৳ {report.totalIncome.toLocaleString("bn-BD")}</span>
             </div>
           </div>
 
           <h4 className="font-bold text-slate-800 border-b border-slate-200 pb-2 pt-4">২. ব্যয়সমূহ (Expenses)</h4>
           <div className="space-y-2">
             <div className="flex justify-between">
-              <span>৳ {report.teacherSalaries.toLocaleString("bn-BD")}</span>
-              <span>শিক্ষকদের নিয়মিত বেতন:</span>
+              <span className="text-slate-500">শিক্ষকদের নিয়মিত বেতন:</span>
+              <span className="font-bold text-slate-800">৳ {report.teacherSalaries.toLocaleString("bn-BD")}</span>
             </div>
             <div className="flex justify-between">
-              <span>৳ {report.otherExpenses.toLocaleString("bn-BD")}</span>
-              <span>অন্যান্য অফিস খরচ:</span>
+              <span className="text-slate-500">অন্যান্য অফিস খরচ:</span>
+              <span className="font-bold text-slate-800">৳ {report.otherExpenses.toLocaleString("bn-BD")}</span>
             </div>
             <div className="flex justify-between font-bold border-t border-slate-100 pt-2 text-slate-900">
-              <span>৳ {report.totalExpense.toLocaleString("bn-BD")}</span>
-              <span>সর্বমোট ব্যয়:</span>
+              <span className="text-slate-900">সর্বমোট ব্যয়:</span>
+              <span className="text-slate-900">৳ {report.totalExpense.toLocaleString("bn-BD")}</span>
             </div>
           </div>
 
           <div className="flex items-center justify-between py-4 bg-slate-50 border-2 border-dashed border-slate-300 px-4 rounded-xl my-6">
-            <span className="text-sm font-bold">
+            <span className="font-bold">আর্থিক স্থিতি (নিট লাভ/ক্ষতি):</span>
+            <span className="text-sm font-bold text-slate-900">
               ৳ {report.amountProfitLoss.toLocaleString("bn-BD")} ({report.netProfit ? "লাভ" : "ক্ষতি"})
             </span>
-            <span className="font-bold">আর্থিক স্থিতি (নিট লাভ/ক্ষতি):</span>
           </div>
         </div>
 

@@ -136,14 +136,37 @@ body {
    ============================ */
 
 @media print {
-  .no-print  { display: none !important; }
-  .print-area {
-    width: 100% !important;
-    max-width: 100% !important;
+  /* Hide the admin layout elements, sidebars, headers, buttons, etc. */
+  aside, header, footer, nav, button, .no-print, .print-hidden, .print\:hidden {
+    display: none !important;
+  }
+
+  /* Reset layout, padding, background, scrollbars for clean printing */
+  html, body, main {
+    background: #ffffff !important;
+    color: #000000 !important;
+    overflow: visible !important;
+    height: auto !important;
     padding: 0 !important;
     margin: 0 !important;
+  }
+
+  /* Center and style the print area */
+  .print-area {
+    display: block !important;
+    width: 100% !important;
+    max-width: 480px !important; /* Standard receipt/invoice print width */
+    margin: 24px auto !important;
+    padding: 24px !important;
     box-shadow: none !important;
-    background: transparent !important;
-    color: black !important;
+    border: 2px solid #000000 !important;
+    border-radius: 12px !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  /* Specific rule for reports to let it take up to 2xl width on print */
+  .print-area.max-w-2xl {
+    max-width: 720px !important;
   }
 }
