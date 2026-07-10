@@ -312,18 +312,30 @@ export default function SalaryPage() {
             <table className="w-full text-left border-collapse text-sm">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200/60 text-slate-500 font-semibold">
-                  <th className="px-6 py-4">পদক্ষেপ</th>
-                  <th className="px-6 py-4">পরিশোধের তারিখ</th>
-                  <th className="px-6 py-4">টাকার পরিমাণ</th>
-                  <th className="px-6 py-4">মাস ও বছর</th>
                   <th className="px-6 py-4">শিক্ষকের নাম</th>
+                  <th className="px-6 py-4">মাস ও বছর</th>
+                  <th className="px-6 py-4">টাকার পরিমাণ</th>
+                  <th className="px-6 py-4">পরিশোধের তারিখ</th>
+                  <th className="px-6 py-4 text-center">পদক্ষেপ</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {salaries.map((sal) => (
                   <tr key={sal.id} className="text-slate-700 hover:bg-slate-50/50">
+                    <td className="px-6 py-4 font-bold text-slate-900">{sal.teachers?.name}</td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-1.5">
+                      <span className="px-2.5 py-1 bg-teal-50 border border-teal-100 text-teal-700 rounded-lg text-xs font-semibold">
+                        {sal.month} {sal.year.toString()}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 font-bold text-slate-900">
+                      ৳ {Number(sal.amount).toLocaleString("bn-BD")}
+                    </td>
+                    <td className="px-6 py-4 text-slate-500">
+                      {new Date(sal.paid_date).toLocaleDateString("bn-BD")}
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <div className="flex items-center justify-center gap-1.5">
                         <button
                           onClick={() => handleOpenEditModal(sal)}
                           className="p-1.5 hover:bg-teal-50 hover:text-teal-600 rounded-lg text-slate-400 transition-colors cursor-pointer"
@@ -340,18 +352,6 @@ export default function SalaryPage() {
                         </button>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-slate-500">
-                      {new Date(sal.paid_date).toLocaleDateString("bn-BD")}
-                    </td>
-                    <td className="px-6 py-4 font-bold text-slate-900">
-                      ৳ {Number(sal.amount).toLocaleString("bn-BD")}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="px-2.5 py-1 bg-teal-50 border border-teal-100 text-teal-700 rounded-lg text-xs font-semibold">
-                        {sal.month} {sal.year.toString()}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 font-bold text-slate-900">{sal.teachers?.name}</td>
                   </tr>
                 ))}
               </tbody>
