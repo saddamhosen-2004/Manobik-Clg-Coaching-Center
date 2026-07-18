@@ -54,7 +54,7 @@ export default function LoginPage() {
             <Lock className="w-8 h-8" />
           </div>
           <h1 className="text-2xl font-bold text-slate-800 font-sans">
-            মানবিক কলেজ কোচিং সেন্টার
+            সাইন্স কর্নার কোচিং সেন্টার
           </h1>
           <p className="text-slate-500 text-sm mt-1">
             অ্যাডমিন প্যানেলে প্রবেশ করতে লগইন করুন
@@ -130,7 +130,7 @@ export default function LoginPage() {
         {/* Footer */}
         <div className="text-center mt-8 pt-6 border-t border-slate-100">
           <p className="text-xs text-slate-400">
-            &copy; {new Date().getFullYear()} মানবিক কলেজ কোচিং সেন্টার। সর্বস্বত্ব সংরক্ষিত।
+            &copy; {new Date().getFullYear()} সাইন্স কর্নার কোচিং সেন্টার। সর্বস্বত্ব সংরক্ষিত।
           </p>
         </div>
       </div>

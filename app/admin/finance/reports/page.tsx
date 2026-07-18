@@ -175,7 +175,7 @@ export default function ReportsPage() {
       {/* Print area representation (HIDDEN ON SCREEN, SHOWS IN PRINT) */}
       <div className="hidden print:block print-area p-8 border-2 border-slate-900 rounded-3xl max-w-2xl mx-auto text-left text-xs">
         <div className="text-center pb-4 border-b-2 border-slate-800 space-y-1">
-          <h2 className="text-lg font-black">মানবিক কলেজ কোচিং সেন্টার</h2>
+          <h2 className="text-lg font-black">সাইন্স কর্নার কোচিং সেন্টার</h2>
           <p className="text-slate-500 text-[10px]">শিক্ষা ও অগ্রগতির পথে আমাদের যাত্রা</p>
           <h3 className="font-bold text-teal-700 text-xs mt-3 pt-1 border-t border-slate-100">
             আর্থিক খতিয়ান বিবরণী রিপোর্ট

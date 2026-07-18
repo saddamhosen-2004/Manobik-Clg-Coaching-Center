@@ -325,7 +325,7 @@ export default function PublicResultSearchPage() {
                           ম
                         </div>
                       )}
-                      <h2 className="text-lg font-black text-slate-800">মানবিক কলেজ কোচিং সেন্টার</h2>
+                      <h2 className="text-lg font-black text-slate-800">সাইন্স কর্নার কোচিং সেন্টার</h2>
                       <p className="text-slate-500 text-[10px]">শিক্ষা ও অগ্রগতির পথে আমাদের যাত্রা</p>
                       <h3 className="font-bold text-teal-700 text-xs mt-3 pt-1 border-t border-slate-100 w-full">
                         একাডেমিক ট্রান্সক্রিপ্ট / মার্কশিট

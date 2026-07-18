@@ -48,7 +48,7 @@ export default function PublicTeachersPage() {
     <div className="space-y-8 text-left font-sans">
       <div>
         <h1 className="text-2xl font-black text-slate-800">শিক্ষক মণ্ডলী</h1>
-        <p className="text-slate-400 text-xs mt-1">মানবিক কলেজ কোচিং সেন্টারের অভিজ্ঞ ও দক্ষ মেন্টরবৃন্দ</p>
+        <p className="text-slate-400 text-xs mt-1">সাইন্স কর্নার কোচিং সেন্টারের অভিজ্ঞ ও দক্ষ মেন্টরবৃন্দ</p>
       </div>
 
       {/* Teacher Cards Grid */}

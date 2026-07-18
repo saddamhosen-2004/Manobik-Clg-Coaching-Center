@@ -460,8 +460,8 @@ export default function FeesPage() {
                 ম
               </div>
             )}
-            <h2 className="text-xl font-bold">মানবিক কলেজ কোচিং সেন্টার</h2>
-            <p className="text-[10px] text-slate-500 mt-0.5">এইচএসসি মানবিক বিভাগের নির্ভরযোগ্য শিক্ষা প্রতিষ্ঠান</p>
+            <h2 className="text-xl font-bold">সাইন্স কর্নার কোচিং সেন্টার</h2>
+            <p className="text-[10px] text-slate-500 mt-0.5">এইচএসসি বিজ্ঞান বিভাগের নির্ভরযোগ্য শিক্ষা প্রতিষ্ঠান</p>
             <p className="text-[10px] text-slate-400">মোবাইল: ০১XXXXXXX • ঢাকা, বাংলাদেশ</p>
           </div>
 

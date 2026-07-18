@@ -51,7 +51,7 @@ export async function uploadImageToImageKit(
     formData.append("signature", authData.signature);
     formData.append("expire", authData.expire.toString());
     formData.append("token", authData.token);
-    formData.append("folder", `/manobik-coaching/${folder}`);
+    formData.append("folder", `/science-corner-coaching/${folder}`);
 
     // 3. Post to ImageKit upload API
     const response = await fetch(`https://upload.imagekit.io/api/v1/files/upload`, {

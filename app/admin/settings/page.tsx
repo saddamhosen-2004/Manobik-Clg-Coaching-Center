@@ -414,7 +414,7 @@ export default function AdminSettingsPage() {
                       type="text"
                       value={siteTitle}
                       onChange={(e) => setSiteTitle(e.target.value)}
-                      placeholder="যেমন: মানবিক কলেজ কোচিং সেন্টার"
+                      placeholder="যেমন: সাইন্স কর্নার কোচিং সেন্টার"
                       className="flex-1 px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-teal-600/20 focus:border-teal-600 transition-all text-xs font-semibold text-left"
                     />
                     <button
@@ -701,7 +701,7 @@ export default function AdminSettingsPage() {
                     type="text"
                     value={heroHeading}
                     onChange={(e) => setHeroHeading(e.target.value)}
-                    placeholder="যেমন: মানবিক বিভাগের জন্য ত্রিশালের সেরা কলেজ কোচিং সেন্টার"
+                    placeholder="যেমন: বিজ্ঞান বিভাগের জন্য ত্রিশালের সেরা কলেজ কোচিং সেন্টার"
                     className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-teal-600/20 focus:border-teal-600 transition-all text-xs font-semibold text-left"
                   />
                 </div>

@@ -305,8 +305,8 @@ export default function PublicExamSchedulePage() {
                   </div>
                 )}
                 <div>
-                  <h2 className="font-black text-slate-800 text-base leading-snug">মানবিক কলেজ কোচিং সেন্টার</h2>
-                  <p className="text-slate-500 text-xs mt-0.5">এইচএসসি মানবিক বিভাগের বিশেষায়িত কোচিং</p>
+                  <h2 className="font-black text-slate-800 text-base leading-snug">সাইন্স কর্নার কোচিং সেন্টার</h2>
+                  <p className="text-slate-500 text-xs mt-0.5">এইচএসসি বিজ্ঞান বিভাগের বিশেষায়িত কোচিং</p>
                 </div>
               </div>
               
@@ -461,7 +461,7 @@ export default function PublicExamSchedulePage() {
 
             {/* Download Branding Footer */}
             <div className="branding-footer hidden flex items-center justify-between border-t border-slate-200/60 pt-4 text-[10px] text-slate-400 font-medium">
-              <span>© ২০২৬ মানবিক কলেজ কোচিং সেন্টার। সর্বস্বত্ব সংরক্ষিত।</span>
+              <span>© ২০২৬ সাইন্স কর্নার কোচিং সেন্টার। সর্বস্বত্ব সংরক্ষিত।</span>
               <span>Developed with ❤️ by Saddam Bin Mazid</span>
             </div>
 

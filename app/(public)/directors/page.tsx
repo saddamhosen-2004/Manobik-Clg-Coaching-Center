@@ -46,7 +46,7 @@ export default function PublicDirectorsPage() {
     <div className="space-y-8 text-left font-sans">
       <div>
         <h1 className="text-2xl font-black text-slate-800">পরিচালনা পর্ষদ</h1>
-        <p className="text-slate-400 text-xs mt-1">মানবিক কলেজ কোচিং সেন্টারের স্বপ্নদ্রষ্টা ও পরিচালকবৃন্দ</p>
+        <p className="text-slate-400 text-xs mt-1">সাইন্স কর্নার কোচিং সেন্টারের স্বপ্নদ্রষ্টা ও পরিচালকবৃন্দ</p>
       </div>
 
       {/* Directors Cards Grid */}

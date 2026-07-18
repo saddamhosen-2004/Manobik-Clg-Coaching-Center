@@ -111,7 +111,7 @@ export default function PublicStudentsPage() {
     <div className="space-y-8 text-left">
       <div>
         <h1 className="text-2xl font-black text-slate-800 font-sans">শিক্ষার্থী তালিকা</h1>
-        <p className="text-slate-400 text-xs mt-1">মানবিক কলেজ কোচিং সেন্টারের নিবন্ধিত শিক্ষার্থীদের সংক্ষিপ্ত বিবরণী</p>
+        <p className="text-slate-400 text-xs mt-1">সাইন্স কর্নার কোচিং সেন্টারের নিবন্ধিত শিক্ষার্থীদের সংক্ষিপ্ত বিবরণী</p>
       </div>
 
       {/* Filters */}
