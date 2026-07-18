@@ -7,34 +7,39 @@ export interface ImageKitAuthParams {
   signature: string;
 }
 
+async function uploadLocal(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await fetch("/api/upload", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Local upload failed: ${errorText}`);
+  }
+
+  const result = await response.json();
+  return result.url;
+}
+
 export async function uploadImageToImageKit(
   file: File,
   folder: string = "general"
 ): Promise<string> {
+  // If ImageKit keys are not configured, fallback to local upload immediately
+  if (!IMAGEKIT_PUBLIC_KEY || !IMAGEKIT_URL_ENDPOINT) {
+    return uploadLocal(file);
+  }
+
   try {
-    // Fallback to local server upload if ImageKit keys are not configured
-    if (!IMAGEKIT_PUBLIC_KEY || !IMAGEKIT_URL_ENDPOINT) {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Local upload failed: ${errorText}`);
-      }
-
-      const result = await response.json();
-      return result.url;
-    }
-
     // 1. Get authentication parameters from Next.js server api
     const authResponse = await fetch("/api/imagekit/auth");
     if (!authResponse.ok) {
-      throw new Error("Failed to get ImageKit auth parameters");
+      console.warn("Failed to get ImageKit auth parameters, falling back to local upload...");
+      return uploadLocal(file);
     }
     const authData: ImageKitAuthParams = await authResponse.json();
 
@@ -55,14 +60,18 @@ export async function uploadImageToImageKit(
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Upload failed: ${errorText}`);
+      console.warn("ImageKit API upload failed, falling back to local upload...");
+      return uploadLocal(file);
     }
 
     const result = await response.json();
     return result.url; // Returns the uploaded image URL
   } catch (error) {
-    console.error("ImageKit upload error:", error);
-    throw error;
+    console.error("ImageKit upload error, attempting local upload fallback:", error);
+    try {
+      return await uploadLocal(file);
+    } catch (fallbackError: any) {
+      throw new Error(`Upload failed. ImageKit error: ${error instanceof Error ? error.message : error}. Local fallback error: ${fallbackError.message}`);
+    }
   }
 }
