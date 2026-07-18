@@ -1,6 +1,4 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
 
 export async function POST(request: Request) {
   try {
@@ -14,26 +12,18 @@ export async function POST(request: Request) {
       );
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
+    // Convert file to Buffer in memory
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
     
-    // Ensure public/uploads directory exists
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
+    // Generate Base64 Data URL
+    const base64Data = buffer.toString("base64");
+    const mimeType = file.type || "image/png";
+    const dataUrl = `data:${mimeType};base64,${base64Data}`;
 
-    // Generate safe unique filename
-    const ext = path.extname(file.name) || ".png";
-    const filename = `${Date.now()}_${Math.random().toString(36).slice(2, 9)}${ext}`;
-    const filePath = path.join(uploadDir, filename);
-
-    // Save file locally
-    fs.writeFileSync(filePath, buffer);
-
-    const fileUrl = `/uploads/${filename}`;
-    return NextResponse.json({ url: fileUrl });
+    return NextResponse.json({ url: dataUrl });
   } catch (error: any) {
-    console.error("Local upload error:", error);
+    console.error("Local upload/Base64 conversion error:", error);
     return NextResponse.json(
       { error: error.message || "Internal Server Error" },
       { status: 500 }
