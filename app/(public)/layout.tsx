@@ -149,27 +149,7 @@ export default function PublicLayout({
           })}
         </nav>
 
-        {/* Admin Redirect Button */}
-        <div className="p-4 relative z-10" style={{ borderTop: "1px solid rgba(255,255,255,0.12)" }}>
-          <Link
-            href="/admin/login"
-            className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-xs font-bold text-white transition-all duration-200 hover:scale-[1.03]"
-            style={{
-              background: "rgba(255,255,255,0.14)",
-              border: "1px solid rgba(255,255,255,0.22)",
-              backdropFilter: "blur(8px)",
-            }}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.22)";
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.14)";
-            }}
-          >
-            <LayoutDashboard className="w-4 h-4" />
-            <span>অ্যাডমিন প্যানেল</span>
-          </Link>
-        </div>
+
       </aside>
 
       {/* =============================================
@@ -266,20 +246,7 @@ export default function PublicLayout({
           })}
         </nav>
 
-        <div className="p-4" style={{ borderTop: "1px solid rgba(255,255,255,0.12)" }}>
-          <Link
-            href="/admin/login"
-            onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-xs font-bold text-white transition-all"
-            style={{
-              background: "rgba(255,255,255,0.14)",
-              border: "1px solid rgba(255,255,255,0.22)",
-            }}
-          >
-            <LayoutDashboard className="w-4 h-4" />
-            <span>অ্যাডমিন প্যানেল</span>
-          </Link>
-        </div>
+
       </aside>
 
       {/* =============================================
