@@ -58,10 +58,10 @@ export default function AdminSettingsPage() {
   // Hero Section Text State
   const [heroBadge, setHeroBadge] = useState("এইচএসসি প্রস্তুতি ২০২৬");
   const [currentHeroBadge, setCurrentHeroBadge] = useState("এইচএসসি প্রস্তুতি ২০২৬");
-  const [heroHeading, setHeroHeading] = useState("মানবিক বিভাগের জন্য ত্রিশালের সেরা কলেজ কোচিং সেন্টার");
-  const [currentHeroHeading, setCurrentHeroHeading] = useState("মানবিক বিভাগের জন্য ত্রিশালের সেরা কলেজ কোচিং সেন্টার");
-  const [heroDescription, setHeroDescription] = useState("বাংলা, ইংরেজি, ইতিহাস, যুক্তিবিদ্যা, পৌরনীতি, অর্থনীতি ও সমাজবিজ্ঞানসহ মানবিক বিভাগের সকল বিষয়ের বিশেষায়িত ও মানসম্মত শিক্ষাদান।");
-  const [currentHeroDescription, setCurrentHeroDescription] = useState("বাংলা, ইংরেজি, ইতিহাস, যুক্তিবিদ্যা, পৌরনীতি, অর্থনীতি ও সমাজবিজ্ঞানসহ মানবিক বিভাগের সকল বিষয়ের বিশেষায়িত ও মানসম্মত শিক্ষাদান।");
+  const [heroHeading, setHeroHeading] = useState("বিজ্ঞান বিভাগের জন্য ত্রিশালের সেরা কলেজ কোচিং সেন্টার");
+  const [currentHeroHeading, setCurrentHeroHeading] = useState("বিজ্ঞান বিভাগের জন্য ত্রিশালের সেরা কলেজ কোচিং সেন্টার");
+  const [heroDescription, setHeroDescription] = useState("পদার্থবিজ্ঞান, রসায়ন, জীববিজ্ঞান, উচ্চতর গণিত, বাংলা, ইংরেজি ও আইসিটিসহ বিজ্ঞান বিভাগের সকল বিষয়ের বিশেষায়িত ও মানসম্মত শিক্ষাদান।");
+  const [currentHeroDescription, setCurrentHeroDescription] = useState("পদার্থবিজ্ঞান, রসায়ন, জীববিজ্ঞান, উচ্চতর গণিত, বাংলা, ইংরেজি ও আইসিটিসহ বিজ্ঞান বিভাগের সকল বিষয়ের বিশেষায়িত ও মানসম্মত শিক্ষাদান।");
   const [savingHeroText, setSavingHeroText] = useState(false);
 
   // General Page State
@@ -87,10 +87,10 @@ export default function AdminSettingsPage() {
         const logo = data?.find(s => s.key === "logo_url")?.value || null;
         const favicon = data?.find(s => s.key === "favicon_url")?.value || null;
         const hideStudents = data?.find(s => s.key === "hide_public_students")?.value === "true";
-        const title = data?.find(s => s.key === "site_title")?.value || "মানবিক কলেজ কোচিং সেন্টার";
+        const title = data?.find(s => s.key === "site_title")?.value || "বিজ্ঞান কলেজ কোচিং সেন্টার";
         const badge = data?.find(s => s.key === "hero_badge")?.value || "এইচএসসি প্রস্তুতি ২০২৬";
-        const heading = data?.find(s => s.key === "hero_heading")?.value || "মানবিক বিভাগের জন্য ত্রিশালের সেরা কলেজ কোচিং সেন্টার";
-        const description = data?.find(s => s.key === "hero_description")?.value || "বাংলা, ইংরেজি, ইতিহাস, যুক্তিবিদ্যা, পৌরনীতি, অর্থনীতি ও সমাজবিজ্ঞানসহ মানবিক বিভাগের সকল বিষয়ের বিশেষায়িত ও মানসম্মত শিক্ষাদান।";
+        const heading = data?.find(s => s.key === "hero_heading")?.value || "বিজ্ঞান বিভাগের জন্য ত্রিশালের সেরা কলেজ কোচিং সেন্টার";
+        const description = data?.find(s => s.key === "hero_description")?.value || "পদার্থবিজ্ঞান, রসায়ন, জীববিজ্ঞান, উচ্চতর গণিত, বাংলা, ইংরেজি ও আইসিটিসহ বিজ্ঞান বিভাগের সকল বিষয়ের বিশেষায়িত ও মানসম্মত শিক্ষাদান।";
 
         setCurrentBannerUrl(banner);
         setPreviewBannerUrl(banner);

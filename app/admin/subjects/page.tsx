@@ -295,7 +295,7 @@ export default function SubjectsPage() {
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div>
                 <label className="block text-slate-700 text-xs font-semibold mb-1.5">
-                  বিষয়ের নাম (যেমন: বাংলা / ইংরেজি / যুক্তিবিদ্যা)
+                  বিষয়ের নাম (যেমন: বাংলা / ইংরেজি / পদার্থবিজ্ঞান)
                 </label>
                 <input
                   type="text"
