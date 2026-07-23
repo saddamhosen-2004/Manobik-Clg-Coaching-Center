@@ -259,7 +259,7 @@ export default function PublicLayout({
 
         {/* FOOTER */}
         <footer
-          className="w-full py-10 text-center mt-auto"
+          className="w-full py-10 text-center mt-auto relative z-10"
           style={{
             background: "linear-gradient(to right, #1E2B40, #2F5A8A)",
             borderTop: "1px solid rgba(255,255,255,0.08)",
