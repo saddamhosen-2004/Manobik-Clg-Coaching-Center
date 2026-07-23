@@ -259,7 +259,7 @@ export default function PublicLayout({
 
         {/* FOOTER */}
         <footer
-          className="w-full py-10 text-center mt-auto relative z-10"
+          className="w-full py-10 text-center mt-auto relative z-40 pointer-events-auto"
           style={{
             background: "linear-gradient(to right, #1E2B40, #2F5A8A)",
             borderTop: "1px solid rgba(255,255,255,0.08)",
@@ -294,13 +294,14 @@ export default function PublicLayout({
             <p className="text-[10px] pt-2" style={{ color: "rgba(226, 232, 240, 0.7)" }}>
               &copy; {new Date().getFullYear()} {siteTitle}। সর্বস্বত্ব সংরক্ষিত।
             </p>
-            <p className="text-[10px] font-semibold pointer-events-auto" style={{ color: "#E2E8F0" }}>
+            <p className="text-[10px] font-semibold pointer-events-auto relative z-30" style={{ color: "#E2E8F0" }}>
               Developed with 💙 by{" "}
               <a
                 href="https://www.dgtalcommerce.com/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:underline text-sky-200 pointer-events-auto cursor-pointer relative z-30 font-semibold"
+                className="hover:underline text-sky-200 font-bold"
+                style={{ cursor: "pointer", display: "inline-block", position: "relative", zIndex: 9999 }}
               >
                 dgtalcommerce.com
               </a>
