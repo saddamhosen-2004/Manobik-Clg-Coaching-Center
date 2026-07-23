@@ -294,13 +294,13 @@ export default function PublicLayout({
             <p className="text-[10px] pt-2" style={{ color: "rgba(226, 232, 240, 0.7)" }}>
               &copy; {new Date().getFullYear()} {siteTitle}। সর্বস্বত্ব সংরক্ষিত।
             </p>
-            <p className="text-[10px] font-semibold" style={{ color: "#E2E8F0" }}>
+            <p className="text-[10px] font-semibold pointer-events-auto" style={{ color: "#E2E8F0" }}>
               Developed with 💙 by{" "}
               <a
-                href="https://www.dgtalcommerce.com"
+                href="https://www.dgtalcommerce.com/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:underline text-sky-200"
+                className="hover:underline text-sky-200 pointer-events-auto cursor-pointer relative z-30 font-semibold"
               >
                 dgtalcommerce.com
               </a>
