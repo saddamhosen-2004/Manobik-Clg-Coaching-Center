@@ -295,7 +295,15 @@ export default function PublicLayout({
               &copy; {new Date().getFullYear()} {siteTitle}। সর্বস্বত্ব সংরক্ষিত।
             </p>
             <p className="text-[10px] font-semibold" style={{ color: "#E2E8F0" }}>
-              Developed with 💙 by dgtalcommerce.com
+              Developed with 💙 by{" "}
+              <a
+                href="https://www.dgtalcommerce.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline text-sky-200"
+              >
+                dgtalcommerce.com
+              </a>
             </p>
           </div>
         </footer>

@@ -462,7 +462,17 @@ export default function PublicExamSchedulePage() {
             {/* Download Branding Footer */}
             <div className="branding-footer hidden flex items-center justify-between border-t border-slate-200/60 pt-4 text-[10px] text-slate-400 font-medium">
               <span>© ২০২৬ সাইন্স কর্নার কোচিং সেন্টার। সর্বস্বত্ব সংরক্ষিত।</span>
-              <span>Developed with 💙 by dgtalcommerce.com</span>
+              <span>
+                Developed with 💙 by{" "}
+                <a
+                  href="https://www.dgtalcommerce.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline text-teal-600"
+                >
+                  dgtalcommerce.com
+                </a>
+              </span>
             </div>
 
           </div>
