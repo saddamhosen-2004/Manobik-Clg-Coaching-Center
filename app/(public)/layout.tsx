@@ -295,7 +295,7 @@ export default function PublicLayout({
               &copy; {new Date().getFullYear()} {siteTitle}। সর্বস্বত্ব সংরক্ষিত।
             </p>
             <p className="text-[10px] font-semibold" style={{ color: "#E2E8F0" }}>
-              Developed with 💙 by Saddam Bin Mazid
+              Developed with 💙 by dgtalcommerce.com
             </p>
           </div>
         </footer>
